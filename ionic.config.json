@@ -1,0 +1,8 @@
+{
+  "name": "doer-ionic",
+  "app_id": "bd8ab5fb",
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  }
+}
