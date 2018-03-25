@@ -13,7 +13,7 @@ import { FormGroup } from '@angular/forms';
 @Component({
   selector: 'dr-form-footer',
   templateUrl: './form-footer.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FormFooterComponent {
   @Input() form: FormGroup;

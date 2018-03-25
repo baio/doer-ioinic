@@ -1,22 +1,14 @@
-<form novalidate [formGroup]="form" class="mb-4">
+<ion-list [formGroup]="form">
 
+    <ng-container *ngFor="let field of fields; trackBy: trackByFun">
 
-    <ion-list>
+        <ion-label stacked *ngIf="field.label">
+            {{field.label}}
+        </ion-label>
 
-        <ng-container *ngFor="let field of fields; trackBy: trackByFun">
+        <ion-input *ngIf="field.kind === 'TextField'" type="text" [formControlName]="field.id">
+        </ion-input>
 
-            <ion-label stacked *ngIf="field.label">
-                {{field.label}}
-            </ion-label>
+    </ng-container>
 
-            <ion-input *ngIf="field.kind === 'TextField'" type="text" [formControlName]="field.id">
-            </ion-input>
-
-        </ng-container>
-
-    </ion-list>
-
-    <dr-form-footer [form]="form" (save)="save.emit($event)" (cancel)="cancel.emit($event)">
-    </dr-form-footer>
-
-</form>
+</ion-list>
