@@ -2,7 +2,8 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy } from "@a
 import { Field } from "../../../form/form.types";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { Subscription } from "rxjs/Subscription";
-import { createForm } from "../../../../doer-ngx-core";
+import { createForm, FormState, formSelectedData } from "../../../../doer-ngx-core";
+import { Observable } from "rxjs/Observable";
 
 @Component({
     selector: 'dr-ngrx-form-layout',
@@ -14,16 +15,38 @@ import { createForm } from "../../../../doer-ngx-core";
     form: FormGroup;
     private sub: Subscription;
 
+    @Input() state$: Observable<FormState>;
     @Input() fields: Field[];
 
     constructor(private readonly fb: FormBuilder) {
     }
 
     ngOnInit(): void {
+
       this.form = createForm(this.fb)(this.fields);
+
+      if (!this.state$) {
+        throw new Error('Input property state$ not set!');
+      }
+
+      // when state's data changed update form fields
+      this.state$.pipe(formSelectedData).subscribe(x => {
+        console.log('state data changed', x);
+        this.form.patchValue(x, { emitEvent: false })
+      })
     }
 
     ngOnDestroy(): void {
     }
+
+    onSave() {
+
+    }
+
+    onCancel() {
+
+    }
+
+
 
   }
