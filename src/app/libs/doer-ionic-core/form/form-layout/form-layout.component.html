@@ -1,16 +1,9 @@
-<form novalidate [formGroup]="form" class="mb-4">
 
-    <dr-form-body
-        [form]="form"
-        [fields]="fields"
-    >
-    </dr-form-body>
+<dr-form-body
+    [form]="form"
+    [fields]="fields"
+>
+</dr-form-body>
 
-    <dr-form-footer
-        [form]="form"
-        (save)="save.emit($event)"
-        (cancel)="cancel.emit($event)"
-    >
-    </dr-form-footer>
 
-</form>
+
