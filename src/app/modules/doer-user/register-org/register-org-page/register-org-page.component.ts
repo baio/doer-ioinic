@@ -18,7 +18,49 @@ export class RegisterOrgPageComponent {
         id: 'orgName',
         label: 'Название Организации',
         validation: { required : true }
-      }
+      }/*,
+      {
+        kind: 'TextField' as 'TextField',
+        id: 'lastName',
+        label: 'Фамилия Владельца',
+        validation: { required : true }
+      },
+      {
+        kind: 'TextField' as 'TextField',
+        id: 'firstName',
+        label: 'Имя Владельца',
+        validation: { required : true }
+      },
+      {
+        kind: 'TextField' as 'TextField',
+        id: 'middleName',
+        label: 'Очество Владельца',
+        validation: { required : true }
+      },
+      {
+        kind: 'TextField' as 'TextField',
+        id: 'email',
+        label: 'Email',
+        validation: { required : true }
+      },
+      {
+        kind: 'TextField' as 'TextField',
+        id: 'phone',
+        label: 'Телефон',
+        validation: { required : true }
+      },
+      {
+        kind: 'TextField' as 'TextField',
+        id: 'password',
+        label: 'Пароль',
+        validation: { required : true }
+      },
+      {
+        kind: 'TextField' as 'TextField',
+        id: 'password2',
+        label: 'Повторите пароль',
+        validation: { required : true }
+      }*/
     ]
   }
 

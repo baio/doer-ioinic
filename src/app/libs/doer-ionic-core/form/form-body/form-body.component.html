@@ -1,18 +1,21 @@
-<form novalidate [formGroup]="form" class="mb-4">
 
-    <ion-list>
+<ion-list>
 
-        <ng-container *ngFor="let field of fields; trackBy: trackByFun">
+    <ng-container *ngFor="let field of fields; trackBy: trackByFun">
 
-            <ion-label stacked *ngIf="field.label">
-                {{field.label}}
-            </ion-label>
+        <ion-label stacked *ngIf="field.label">
+            {{field.label}}
+        </ion-label>
 
-            <ion-input *ngIf="field.kind === 'TextField'" type="text">
-            </ion-input>
+        <ion-input
+            *ngIf="field.kind === 'TextField'"
+            type="text"
+            [formControlName]="field.id"
+        >
+        </ion-input>
 
-        </ng-container>
+    </ng-container>
 
-    </ion-list>
+</ion-list>
 
-</form>
+

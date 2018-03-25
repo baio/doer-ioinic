@@ -4,6 +4,7 @@ import { FormBodyComponent } from './form-body/form-body.component';
 import { FormLayoutComponent } from './form-layout/form-layout.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from 'ionic-angular';
+import { FormFooterComponent } from './form-footer/form-footer.component';
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import { IonicModule } from 'ionic-angular';
   ],
   declarations: [
       FormBodyComponent,
-      FormLayoutComponent
+      FormLayoutComponent,
+      FormFooterComponent
   ],
   exports: [
     FormLayoutComponent

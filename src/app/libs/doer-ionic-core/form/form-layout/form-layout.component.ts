@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy } from "@angular/core";
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, Output, EventEmitter } from "@angular/core";
 import { Field } from "../form.types";
 import { FormGroup } from "@angular/forms";
 import { Subscription } from "rxjs/Subscription";
@@ -10,9 +10,12 @@ import { Subscription } from "rxjs/Subscription";
   })
   export class FormLayoutComponent implements OnInit, OnDestroy {
 
+    private sub: Subscription;
+
     @Input() fields: Field[];
     @Input() form: FormGroup;
-    private sub: Subscription;
+    @Output() save = new EventEmitter<any>();
+    @Output() cancel = new EventEmitter<boolean>();
 
     ngOnInit(): void {
     }

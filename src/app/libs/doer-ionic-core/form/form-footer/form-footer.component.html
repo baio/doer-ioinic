@@ -1,0 +1,14 @@
+<button
+    ion-button
+    type="submit"
+    [disabled]="!form.valid || !form.dirty"
+    (click)="onSave()"
+>
+    Сохранить
+</button>
+
+<button ion-button type="submit"
+    (click)="onCancel()"
+>
+    Отмена
+</button>

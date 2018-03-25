@@ -6,7 +6,7 @@ import { Subscription } from "rxjs/Subscription";
 @Component({
     selector: 'dr-form-body',
     templateUrl: './form-body.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+     changeDetection: ChangeDetectionStrategy.OnPush
   })
   export class FormBodyComponent implements OnInit, OnDestroy {
 
