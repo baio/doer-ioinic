@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgxFormModule } from '../../libs/doer-ionic-core';
+import { NgxFormModule, PagesModule } from '../../libs/doer-ionic-core';
 import { RegisterOrgPageComponent } from './register-org';
 import { IonicModule } from 'ionic-angular';
 
@@ -8,7 +8,8 @@ import { IonicModule } from 'ionic-angular';
   imports: [
     CommonModule,
     IonicModule,
-    NgxFormModule
+    NgxFormModule,
+    PagesModule
   ],
   declarations: [
     RegisterOrgPageComponent
