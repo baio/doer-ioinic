@@ -16,6 +16,6 @@ export class FormService {
     }
 
     save: SaveFormFn = ({data}) =>
-        this.httpService.post('???', data);
+        this.httpService.post('register-org', {...data.data, avatar: 'https://image.flaticon.com/icons/svg/149/149071.svg' })
 
 }

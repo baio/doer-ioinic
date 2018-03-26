@@ -31,7 +31,7 @@ import { HttpService, HTTP_CONFIG } from '../../libs/doer-ngx-core';
     RegisterOrgPageComponent
   ],
   providers: [
-    { provide: HTTP_CONFIG, useValue: { baseUrl: null } },
+    { provide: HTTP_CONFIG, useValue: { baseUrl: 'http://localhost:7071/api/' } },
     HttpService,
     RegitserOrgFormService,
   ],

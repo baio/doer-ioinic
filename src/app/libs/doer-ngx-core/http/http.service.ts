@@ -65,11 +65,10 @@ export const HTTP_AUTH_SERVICE = new InjectionToken<HttpConfig>('HTTP_AUTH_SERVI
 @Injectable()
 export class HttpService {
 
-  private config: HttpConfig;
 
   constructor(
       private http: Http,
-      @Optional() @Inject(HTTP_CONFIG) config: HttpConfig,
+      @Optional() @Inject(HTTP_CONFIG) private config: HttpConfig,
       @Optional() @Inject(HTTP_AUTH_SERVICE) private authService: any | null
     )
     {

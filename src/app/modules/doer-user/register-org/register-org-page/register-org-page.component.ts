@@ -30,7 +30,7 @@ export class RegisterOrgPageComponent {
         id: 'orgName',
         label: 'Название Организации',
         validation: { required : true }
-      }/*,
+      },
       {
         kind: 'TextField' as 'TextField',
         id: 'lastName',
@@ -70,7 +70,7 @@ export class RegisterOrgPageComponent {
         id: 'password2',
         label: 'Повторите пароль',
         validation: { required : true }
-      }*/
+      }
     ];
 
 
