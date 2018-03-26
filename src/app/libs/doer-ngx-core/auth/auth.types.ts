@@ -1,13 +1,29 @@
-export type UserId = string;
-export type UserName = string;
-export type WebToken = string;
-
 export interface Principal {
-    id: UserId;
-    name: UserName;
+  id: string;
+  name: string;
+  avatar: string|null;
 }
 
-export interface IAuth {
-    principal: Principal|null;
-    setTokens(userToken: WebToken, accessToken: WebToken): void;
+export interface MockAuthConfig {
+  token: string;
+  principal: Principal;
+}
+
+export interface AuthConfigMock {
+  kind: 'AuthConfigMock';
+  val: MockAuthConfig;
+}
+
+export interface AuthConfigAuth0 {
+  kind: 'AuthConfigOAuth';
+  val: any;
+}
+
+export type AuthConfig = AuthConfigMock | AuthConfigAuth0;
+
+
+export interface Tokens {
+  userToken: string;
+  accessToken: string;
+  refreshToken: string;
 }

@@ -3,9 +3,16 @@ import { Store } from "@ngrx/store";
 import { Actions } from "@ngrx/effects";
 import { mapTo } from "rxjs/operators";
 
+/*
 const errFn: DisplayErrorFn = err => {
+    const t = ReflectiveInjector.resolveAndCreate([App, ToastController, Config, Platform]);
+    const toastController: ToastController = t.get(ToastController);
+    console.log(toastController);
+    const toast = toastController.create({message: err.toString()});
+    toast.present();
     console.error(err);
 };
+*/
 
 const busyFn: DisplayBusyFn = id => f => {
     console.info('busy : ', f);
@@ -27,9 +34,12 @@ export class CommonFormEffects extends CommonFormEffectsBase {
       wrap: FormWrap,
       load: LoadFormFn,
       save: SaveFormFn,
+      errFn: DisplayErrorFn,
       busyPreds?: [ ActionPred[], ActionPred [] ] | null
     )
     {
+
+
 
         super(
             store$,
