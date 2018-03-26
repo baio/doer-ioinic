@@ -1,18 +1,12 @@
-import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy } from "@angular/core";
+import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, Output, EventEmitter } from "@angular/core";
 import { Field } from "../../../form/form.types";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { Subscription } from "rxjs/Subscription";
-import { createForm, FormState, formSelectedData } from "../../../../doer-ngx-core";
+import { createForm, FormState, formSelectedData, FormAction, updateFormValues, saveFormAction, formSelectSuccessStatusKind, formValueChangedAction } from "../../../../doer-ngx-core";
 import { Observable } from "rxjs/Observable";
+import { distinctUntilChanged } from "rxjs/operators";
+import { equals } from "ramda";
 
-export type UpdateFormvalues = (form: FormGroup) => (values: {[key: string]: any} | null) => void;
-/**
- * Path form value if any or reset if null
- * @param form
- */
-export const updateFormValues: UpdateFormvalues = form => vals => {
-  vals ? form.patchValue(vals, { emitEvent: false }) : form.reset(undefined, {emitEvent: false});
-};
 
 @Component({
     selector: 'dr-ngrx-form-layout',
@@ -22,10 +16,20 @@ export const updateFormValues: UpdateFormvalues = form => vals => {
   export class NgrxFormLayoutComponent implements OnInit, OnDestroy {
 
     form: FormGroup;
-    private sub: Subscription;
+    private sub1: Subscription;
+    private sub2: Subscription;
+    private sub3: Subscription;
+    private sub4: Subscription;
 
     @Input() state$: Observable<FormState>;
     @Input() fields: Field[];
+    // if you want update form state immediately after some field value changed,
+    // in other case state will be changed only after form's data successfull update, i.e. FormStateStatusUpdated
+    @Input() dispatchFormValueChangedAction: boolean;
+
+    @Output() action = new EventEmitter<FormAction>();
+    @Output() complete = new EventEmitter<void>();
+    @Output() cancel = new EventEmitter<void>();
 
     constructor(private readonly fb: FormBuilder) {
     }
@@ -39,24 +43,55 @@ export const updateFormValues: UpdateFormvalues = form => vals => {
       }
 
       // when state's data changed update form fields
-      this.state$.pipe(formSelectedData).subscribe(x => {
+      this.sub1 = this.state$.pipe(formSelectedData).subscribe(x => {
         console.log('state data changed', x);
-        // this.form.patchValue(x, { emitEvent: false })
         updateFormValues(this.form)(x);
-      })
+      });
+
+
+      // when update succeed, mark form as pristine and emit complete event
+      this.sub2 = this.state$.pipe(formSelectSuccessStatusKind('FormStateStatusUpdated'))
+      .subscribe(x => {
+        console.log('form update success', x);
+        this.form.markAsPristine();
+        this.form.markAsUntouched();
+        this.complete.emit();
+      });
+
+      // when form's data load succeed, mark form as untoched
+      this.sub3 = this.state$.pipe(formSelectSuccessStatusKind('FormStateStatusLoaded'))
+      .subscribe(x => {
+        console.log('form load success', x);
+        this.form.markAsUntouched();
+      });
+
+      if (this.dispatchFormValueChangedAction) {
+        this.sub4 = this.form.valueChanges
+          .pipe(
+            distinctUntilChanged(equals)
+          ).subscribe(x => {
+            console.log('value changed', x);
+            this.action.emit(formValueChangedAction(x));
+          });
+      }
     }
 
     ngOnDestroy(): void {
+      this.sub1.unsubscribe();
+      this.sub2.unsubscribe();
+      this.sub3.unsubscribe();
+      if (this.sub4) {
+        this.sub4.unsubscribe();
+      }
     }
 
     onSave() {
-
+      this.action.emit(saveFormAction(this.form.value));
     }
 
     onCancel() {
-
+      this.cancel.emit();
     }
-
 
 
   }

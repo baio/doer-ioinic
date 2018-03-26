@@ -4,8 +4,8 @@ import { Field } from "../../../../libs/doer-ionic-core";
 import { Store } from "@ngrx/store";
 import { RegisterOrgFormStore, RegisterOrgFormState } from "../register-org.types";
 import { Observable } from "rxjs/Observable";
-import { selectFormSubState } from "../store";
-import { FormState } from "../../../../libs/doer-ngx-core";
+import { selectFormSubState, subFormAction } from "../store";
+import { FormState, FormAction } from "../../../../libs/doer-ngx-core";
 
 @Component({
     selector: 'dr-user-register-org-page',
@@ -75,6 +75,14 @@ export class RegisterOrgPageComponent {
       }*/
     ];
 
+
+  }
+
+  onAction(action: FormAction) {
+    this.store.dispatch(subFormAction(action));
+  }
+
+  onCancel() {
 
   }
 

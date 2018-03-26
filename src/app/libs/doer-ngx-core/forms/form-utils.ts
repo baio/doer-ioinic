@@ -6,6 +6,15 @@ import { assertUnreachable, notNil } from "../../doer-core";
 
 const nn = notNil;
 
+export type UpdateFormvalues = (form: FormGroup) => (values: {[key: string]: any} | null) => void;
+/**
+ * Path form value if any or reset if null
+ * @param form
+ */
+export const updateFormValues: UpdateFormvalues = form => vals => {
+  vals ? form.patchValue(vals, { emitEvent: false }) : form.reset(undefined, {emitEvent: false});
+};
+
 const createTextInput = (field: TextField) => {
     const vn = field.validation || {};
     const vrs = [

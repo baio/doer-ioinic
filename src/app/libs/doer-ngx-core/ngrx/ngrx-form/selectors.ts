@@ -19,7 +19,7 @@ export const formSelectSuccessStatus: FormSelectSuccessStatus = $ => $.pipe(
     distinctUntilChanged()
 );
 
-export type FormSelectSuccessStatusKind = (kind: FormSelectSuccessStatusKind) => ($: Observable<FormState>) => Observable<FormStateStatus>;
+export type FormSelectSuccessStatusKind = (kind: FormStateStatusKind) => ($: Observable<FormState>) => Observable<FormStateStatus>;
 export const formSelectSuccessStatusKind: FormSelectSuccessStatusKind = kind => $ => $.pipe(
     formSelectSuccessStatus,
     filter(propEq('kind', kind)),

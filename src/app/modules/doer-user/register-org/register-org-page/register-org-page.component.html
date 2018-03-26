@@ -2,6 +2,8 @@
     <dr-ngrx-form-layout
         [state$]="formState$"
         [fields]="fields"
+        (action)="onAction($event)"
+        (cancel)="onCancel($event)"
     >
     </dr-ngrx-form-layout>
 </dr-primary-page>
