@@ -30,7 +30,7 @@ export class RegisterOrgPageComponent {
         id: 'orgName',
         label: 'Название Организации',
         validation: { required : true }
-      }/*,
+      },
       {
         kind: 'TextField' as 'TextField',
         id: 'lastName',
@@ -46,8 +46,7 @@ export class RegisterOrgPageComponent {
       {
         kind: 'TextField' as 'TextField',
         id: 'middleName',
-        label: 'Очество Владельца',
-        validation: { required : true }
+        label: 'Очество Владельца'
       },
       {
         kind: 'TextField' as 'TextField',
@@ -58,8 +57,7 @@ export class RegisterOrgPageComponent {
       {
         kind: 'TextField' as 'TextField',
         id: 'phone',
-        label: 'Телефон',
-        validation: { required : true }
+        label: 'Телефон'
       },
       {
         kind: 'TextField' as 'TextField',
@@ -72,7 +70,7 @@ export class RegisterOrgPageComponent {
         id: 'password2',
         label: 'Повторите пароль',
         validation: { required : true }
-      }*/
+      }
     ];
 
 

@@ -1,0 +1,9 @@
+ion-label {
+    color:  map-get($colors, primary);
+}
+.text-input-md {
+    margin: 8px 8px;
+}
+ion-input.ng-invalid.ng-touched {
+    border: 1px solid map-get($colors, danger);
+}

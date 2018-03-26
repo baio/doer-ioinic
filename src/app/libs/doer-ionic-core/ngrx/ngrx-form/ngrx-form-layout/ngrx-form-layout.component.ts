@@ -58,7 +58,7 @@ import { equals } from "ramda";
         this.complete.emit();
       });
 
-      // when form's data load succeed, mark form as untoched
+      // when form's data load succeed, mark form as untouched
       this.sub3 = this.state$.pipe(formSelectSuccessStatusKind('FormStateStatusLoaded'))
       .subscribe(x => {
         console.log('form load success', x);
