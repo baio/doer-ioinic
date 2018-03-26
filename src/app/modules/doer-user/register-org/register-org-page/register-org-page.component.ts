@@ -1,6 +1,11 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy } from "@angular/core";
 import { Subscription } from "rxjs/Subscription";
 import { Field } from "../../../../libs/doer-ionic-core";
+import { Store } from "@ngrx/store";
+import { RegisterOrgFormStore, RegisterOrgFormState } from "../register-org.types";
+import { Observable } from "rxjs/Observable";
+import { selectFormSubState } from "../store";
+import { FormState } from "../../../../libs/doer-ngx-core";
 
 @Component({
     selector: 'dr-user-register-org-page',
@@ -9,9 +14,16 @@ import { Field } from "../../../../libs/doer-ionic-core";
   })
 export class RegisterOrgPageComponent {
 
+  readonly formState$: Observable<FormState>;
   fields: Field[];
 
-  constructor() {
+  constructor(
+    private readonly store: Store<RegisterOrgFormStore>
+  )
+  {
+
+    this.formState$ = store.select(selectFormSubState);
+
     this.fields = [
       {
         kind: 'TextField' as 'TextField',
@@ -61,7 +73,9 @@ export class RegisterOrgPageComponent {
         label: 'Повторите пароль',
         validation: { required : true }
       }*/
-    ]
+    ];
+
+
   }
 
 }

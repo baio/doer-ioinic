@@ -5,6 +5,15 @@ import { Subscription } from "rxjs/Subscription";
 import { createForm, FormState, formSelectedData } from "../../../../doer-ngx-core";
 import { Observable } from "rxjs/Observable";
 
+export type UpdateFormvalues = (form: FormGroup) => (values: {[key: string]: any} | null) => void;
+/**
+ * Path form value if any or reset if null
+ * @param form
+ */
+export const updateFormValues: UpdateFormvalues = form => vals => {
+  vals ? form.patchValue(vals, { emitEvent: false }) : form.reset(undefined, {emitEvent: false});
+};
+
 @Component({
     selector: 'dr-ngrx-form-layout',
     templateUrl: './ngrx-form-layout.component.html',
@@ -32,7 +41,8 @@ import { Observable } from "rxjs/Observable";
       // when state's data changed update form fields
       this.state$.pipe(formSelectedData).subscribe(x => {
         console.log('state data changed', x);
-        this.form.patchValue(x, { emitEvent: false })
+        // this.form.patchValue(x, { emitEvent: false })
+        updateFormValues(this.form)(x);
       })
     }
 

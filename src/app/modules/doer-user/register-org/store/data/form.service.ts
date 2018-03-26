@@ -7,11 +7,11 @@ import { of } from "rxjs/Observable/of";
 @Injectable()
 export class FormService {
 
-    constructor(private readonly formService: FormService) {
+    constructor(/*private readonly httpService: HttpService*/) {
     }
 
     load: LoadFormFn = ({data}) => {
-        return of(ok(null));
+        return of(ok({}));
     }
 
     save: SaveFormFn = ({data}) => {

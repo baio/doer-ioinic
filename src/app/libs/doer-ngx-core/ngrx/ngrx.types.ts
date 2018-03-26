@@ -1,5 +1,6 @@
 import { ObservableResult, IAction, IResultAction } from "../../doer-core";
 import { Observable } from "rxjs/Observable";
+import { Actions } from "@ngrx/effects";
 
 export interface Status {
   kind: string;

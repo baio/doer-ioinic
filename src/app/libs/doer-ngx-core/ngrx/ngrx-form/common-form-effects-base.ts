@@ -1,29 +1,69 @@
-import * as fromEffects from './effects';
+import * as E from './effects';
 import { Effect, Actions } from '@ngrx/effects';
 import { Store, Action } from '@ngrx/store';
 // import { ToastrService, BusyService, GoActionPayload } from '../../../index';
 import { Observable } from 'rxjs/Observable';
+import { merge } from 'rxjs/Observable/merge';
 import * as A from './actions';
 import { forkJoin } from 'rxjs/observable/forkJoin';
-import { flatMap, mergeAll, merge } from 'rxjs/operators';
+import { flatMap } from 'rxjs/operators';
 
 import { map, propEq, any as rany, eqProps, pipe, filter, anyPass, reject, apply, tap, isNil, contains, last } from 'ramda';
-import { ActionPred, DisplayErrorFn } from '../ngrx.types';
+import { ActionPred, DisplayErrorFn, ObservableMap } from '../ngrx.types';
 import { IAction } from '../../../doer-core';
-import { displayBusyEffect, DisplayBusyFn, SelectRoutePrms } from '../ngrx-utils';
+import { displayBusyEffect, DisplayBusyFn, SelectRoutePrms } from '../effect-helpers';
 
 export type FormWrap = (fn: (payload: Observable<any>) => Observable<A.FormAction>) =>
   (actions$: Actions<Action>) => Observable<IAction<any, A.FormAction>>;
 
-export type CommonFormEffectsMethod = (_this: CommonFormEffectsBase) => (actions: Actions) => Observable<Actions>;
-export const loadForm: CommonFormEffectsMethod = (_this: any) => actions$ => actions$.pipe(_this.wrap(fromEffects.loadFormEffect(_this.load)(_this.store$)));
-export const saveForm: CommonFormEffectsMethod = (_this: any) => actions$ => actions$.pipe(_this.wrap(fromEffects.saveFormEffect(_this.selectFormState)(_this.save)(_this.store$)));
-export const initParamsChangeForm: CommonFormEffectsMethod = (_this: any) => actions$ => actions$.pipe(_this.wrap(fromEffects.routeParamsChangedFormEffect));
-export const displayFormErrors: CommonFormEffectsMethod = (_this: any) => actions$ => actions$.pipe(_this.wrap(fromEffects.displayFormErrorsEffect(_this.toastrService.showError, [A.isLoadFormResultAction, A.isSaveFormResultAction])));
-export const displayFormPredsErrors: CommonFormEffectsMethod = (_this: any) => actions$ => actions$.pipe(fromEffects.displayFormErrorsEffect(_this.toastrService.showError, _this.busyPreds && _this.busyPreds[1] || []));
-export const displayFormBusy: CommonFormEffectsMethod = (_this: any) => actions$ => actions$.pipe(_this.wrap(fromEffects.displayFormBusyEffect(_this.busyService.toggleBusy)));
-export const displayFormPredsBusy: CommonFormEffectsMethod = (_this: any) => actions$ => actions$.pipe(
-  displayBusyEffect(_this.busyPreds ? _this.busyPreds[0] : [], _this.busyPreds ? _this.busyPreds[1] : [])(_this.busyService.toggleBusy)
+export type CommonFormEffectsMethod = (_this: CommonFormEffectsBase) => ObservableMap<IAction<any, any>, A.FormAction>;
+
+export const loadForm: CommonFormEffectsMethod = _this => actions$ =>
+  actions$.pipe(
+    _this.wrap(
+      E.loadFormEffect(_this.selectRoutePrms)(_this.load)(_this.store$)
+    ) as any
+  );
+
+export const saveForm: CommonFormEffectsMethod = (_this: CommonFormEffectsBase) => actions$ =>
+  actions$.pipe(
+    _this.wrap(
+      E.saveFormEffect(_this.selectRoutePrms)(_this.selectFormState)(_this.save)(_this.store$)
+    ) as any
+  );
+
+export const initParamsChangeForm: CommonFormEffectsMethod = _this => actions$ =>
+  actions$.pipe(
+    _this.wrap(
+      E.routeParamsChangedFormEffect
+    ) as any
+  );
+
+export const displayFormErrors: CommonFormEffectsMethod = _this => actions$ =>
+  actions$.pipe(
+    _this.wrap(
+      E.displayFormErrorsEffect(_this.displayErrorFn, [A.isLoadFormResultAction, A.isSaveFormResultAction])
+    ) as any
+  );
+
+export const displayFormPredsErrors: CommonFormEffectsMethod = _this => actions$ =>
+  actions$.pipe(
+    E.displayFormErrorsEffect(
+      _this.displayErrorFn, _this.busyPreds && _this.busyPreds[1] || []
+    )
+  );
+
+export const displayFormBusy: CommonFormEffectsMethod = _this => actions$ =>
+  actions$.pipe(
+    _this.wrap(
+      E.displayFormBusyEffect(_this.displayBusyFn)
+    ) as any
+  );
+
+export const displayFormPredsBusy: CommonFormEffectsMethod = _this => actions$ => actions$.pipe(
+  displayBusyEffect
+    (_this.busyPreds ? _this.busyPreds[0] : [], _this.busyPreds ? _this.busyPreds[1] : [])
+    (_this.displayBusyFn)
 );
 
 export enum CommonFormEffectTypes {
@@ -56,17 +96,18 @@ const createCommonEffects = (_this, except: CommonFormEffectTypes[]) => (actions
 export class CommonFormEffectsBase {
 
   constructor(
-    protected readonly store$: Store<any>,
-    protected readonly actions$: Actions,
-    private readonly displayErrorFn: DisplayErrorFn,
-    private readonly displayBusyFn: DisplayBusyFn,
-    private readonly wrap: FormWrap,
-    private readonly selectRoutePrms: SelectRoutePrms,
-    private readonly selectFormState: fromEffects.SelectFormState,
-    protected readonly load: fromEffects.LoadFormFn,
-    protected readonly save: fromEffects.SaveFormFn,
-    private readonly busyPreds?: [ ActionPred[], ActionPred [] ] | null
-  ) {
+    public readonly store$: Store<any>,
+    public readonly actions$: Actions,
+    public readonly displayErrorFn: DisplayErrorFn,
+    public readonly displayBusyFn: DisplayBusyFn,
+    public readonly wrap: FormWrap,
+    public readonly selectRoutePrms: SelectRoutePrms,
+    public readonly selectFormState: E.SelectFormState,
+    public readonly load: E.LoadFormFn,
+    public readonly save: E.SaveFormFn,
+    public readonly busyPreds?: [ ActionPred[], ActionPred [] ] | null
+  )
+  {
   }
 
   createCommonEffects = (except: CommonFormEffectTypes[] = []) =>

@@ -1,4 +1,7 @@
 <dr-primary-page title="Новая организация">
-    <dr-ngrx-form-layout [fields]="fields">
+    <dr-ngrx-form-layout
+        [state$]="formState$"
+        [fields]="fields"
+    >
     </dr-ngrx-form-layout>
 </dr-primary-page>

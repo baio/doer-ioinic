@@ -4,7 +4,7 @@ import { Actions, Effect } from '@ngrx/effects';
 import { RegisterOrgFormState } from "../register-org.types";
 import { FormService } from "./data/form.service";
 import { CommonFormEffects } from "../../../../libs/doer-ionic-core";
-import { subFormActionsWrap } from "../../../../libs/doer-ngx-core";
+import { subFormActionsWrap, CommonFormEffectTypes } from "../../../../libs/doer-ngx-core";
 import { isSubFormAction, subFormAction } from "./actions";
 
 
@@ -27,6 +27,6 @@ export class FormEffects extends CommonFormEffects {
     );
   }
 
-  @Effect() common = this.createCommonEffects();
+  @Effect() common = this.createCommonEffects([]);
 
 }

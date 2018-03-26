@@ -7,7 +7,9 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { DoerUserModule, RegisterOrgPageComponent } from './modules/doer-user';
-
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 @NgModule({
   declarations: [
@@ -17,6 +19,9 @@ import { DoerUserModule, RegisterOrgPageComponent } from './modules/doer-user';
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
+    StoreModule.forRoot({}),
+    EffectsModule.forRoot([]),
+    StoreDevtoolsModule.instrument(),
     DoerUserModule
   ],
   bootstrap: [IonicApp],

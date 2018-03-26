@@ -5,28 +5,26 @@ import { IAction, IResultAction, filterMapRx, getPayload, isErr, mapPropX, guid 
 import { withLatestFrom, map, filter, tap, merge, mergeAll } from 'rxjs/operators';
 import { selectRouterIdPath, selectRouterSegments } from './ngrx-router/selectors';
 import { anyPass, F, cond } from 'ramda';
+import { getErrorMessage } from './error-helpers';
 
 export type SelectRoutePrms = (store$: Store<any>) => Observable<RoutePrms>;
-export type EffectWithResultFun = (selectRoutePrms: SelectRoutePrms) => (pred: ActionPred, crt: ActionResultFactory) => (fn: any) =>
-  (store$: Store<any>) => (listActions: Observable<IAction<any, any>>) => Observable<IResultAction<any, any>>;
-export const effectWithResultFun: EffectWithResultFun = selectRoutePrms => (pred, crt) => fn => store$ => actions$ =>
-  actions$.pipe(
+export type EffectWithResultFun = (selectRoutePrms: SelectRoutePrms) =>
+  (pred: ActionPred, crt: ActionResultFactory) => (fn: any) =>
+    (store$: Store<any>) => (listActions: Observable<IAction<any, any>>) => Observable<IResultAction<any, any>>;
+export const effectWithResultFun: EffectWithResultFun = selectRoutePrms => (pred, crt) => fn => store$ => actions$ => {
+  return actions$.pipe(
     filterMapRx(pred)(getPayload),
     withLatestFrom(
-      store$.select(selectRoutePrms),
+      selectRoutePrms(store$),
       (data, routePrms) => ({data, ...routePrms})
     ),
     fn,
     map(crt)
   );
+}
 
 // Display Errors
 
-const fixEmptyMsg = (msg: string) => msg ? msg + ' ' : '';
-const getUnknownErrorMessage = (msg: string) => (e: any) => fixEmptyMsg(msg) + (e['code'] ? ` Код ошибки ${e['code']}` : '');
-
-export const getErrorMessage = (httpErrorMsg: string, unknowErrMsg: string) =>
-  getUnknownErrorMessage(unknowErrMsg);
 
 export interface HandleErrorOpts {
     preds: ActionPred[];
