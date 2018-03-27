@@ -60,7 +60,7 @@ interface HttpPostLike extends HttpMethod {
 type HttpRequest = HttpGetLike | HttpPostLike;
 
 export const HTTP_CONFIG = new InjectionToken<HttpConfig>('HTTP_CONFIG');
-export const HTTP_AUTH_SERVICE = new InjectionToken<HttpConfig>('HTTP_AUTH_SERVICE');
+// export const HTTP_AUTH_SERVICE = new InjectionToken<HttpConfig>('HTTP_AUTH_SERVICE');
 
 @Injectable()
 export class HttpService {
@@ -69,7 +69,7 @@ export class HttpService {
   constructor(
       private http: Http,
       @Optional() @Inject(HTTP_CONFIG) private config: HttpConfig,
-      @Optional() @Inject(HTTP_AUTH_SERVICE) private authService: any | null
+      @Optional() @Inject(AuthService) private authService: AuthService | null
     )
     {
     }
@@ -86,8 +86,8 @@ export class HttpService {
 
     // append headers
     const headers = new Headers();
-    if (this.authService && this.authService.accessToken) {
-      headers.append('Authorization', this.authService.accessToken);
+    if (this.authService && this.authService.token) {
+      headers.append('Authorization', this.authService.token);
     }
 
     pipe(

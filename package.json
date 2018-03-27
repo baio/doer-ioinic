@@ -33,6 +33,7 @@
     "@ngrx/store-devtools": "^5.2.0",
     "ionic-angular": "3.9.2",
     "ionicons": "3.0.0",
+    "jsonwebtoken": "^8.2.0",
     "ngx-toastr": "^8.3.0",
     "ramda": "^0.25.0",
     "rxjs": "5.5.7",
@@ -41,7 +42,10 @@
   },
   "devDependencies": {
     "@ionic/app-scripts": "3.1.8",
+    "@types/auth0-js": "^8.11.2",
     "@types/ramda": "^0.25.20",
+    "@types/jsonwebtoken": "^7.2.6",
+    "auth0-js": "^9.4.1",
     "tslint-ionic-rules": "0.0.14",
     "typescript": "~2.6.2"
   },

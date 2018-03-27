@@ -23,7 +23,7 @@ export type AuthConfig = AuthConfigMock | AuthConfigAuth0;
 
 
 export interface Tokens {
-  userToken: string;
+  idToken: string;
   accessToken: string;
   refreshToken: string;
 }

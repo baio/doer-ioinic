@@ -9,8 +9,8 @@ export const AUTH_SERVICE_CONFIG = new InjectionToken('AUTH_SERVICE_CONFIG');
 
 @Injectable()
 export abstract class  AuthService {
-    principal: Principal | null;
-    accessToken: string | null;
-    abstract setTokens(tokens: Tokens): void;
+    token: string | null;
+    principal: Observable<Principal | null>;
+    abstract updatePrincipal(tokens: Tokens): Promise<Principal | null>;
 }
 

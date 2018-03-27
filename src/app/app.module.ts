@@ -11,6 +11,16 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
+const auth0Config = {
+  clientID: 'fovIqg72k1N80mu9lyfu3oupwqCPArPv',
+  domain: 'doer-stage.eu.auth0.com',
+  responseType: 'token id_token',
+  audience: 'https://doer-stage.eu.auth0.com/userinfo',
+  redirectUri: 'http://localhost:3000/callback',
+  scope: 'openid'
+}
+
+
 @NgModule({
   declarations: [
     MyApp,
