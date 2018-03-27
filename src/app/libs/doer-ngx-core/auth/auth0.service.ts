@@ -100,11 +100,11 @@ export class Auth0Service extends AuthService {
     new Promise((resolve, reject) =>
       this.auth0.parseHash((err, authResult) => {
         if (err) {
-          return reject(err);
+          reject(err);
         } else if (authResult && authResult.accessToken && authResult.idToken) {
-          this.updateStorage(authResult as any);
+          resolve(authResult as any);
         } else {
-          return reject(new Error('Auth: Required tokens not found'));
+          reject(new Error('Auth: Required tokens not found'));
         }
       })
     );
