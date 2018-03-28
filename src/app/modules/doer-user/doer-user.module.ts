@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpModule } from '@angular/http';
 import { NgxFormModule, PagesModule } from '../../libs/doer-ionic-core';
 import { RegisterOrgPageComponent } from './register-org';
-import { IonicModule } from 'ionic-angular';
+import { IonicModule, IonicPageModule } from 'ionic-angular';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import {
@@ -12,6 +12,7 @@ import {
   FormEffects as  RegitserOrgFormEffects
 } from './register-org';
 import { HttpService, HTTP_CONFIG } from '../../libs/doer-ngx-core';
+import { RegisterOrgCompletePageModule } from './register-org-complete/register-org-complete-page/register-org-complete-page.component.module';
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import { HttpService, HTTP_CONFIG } from '../../libs/doer-ngx-core';
     PagesModule,
     EffectsModule.forFeature([RegitserOrgFormEffects]),
     StoreModule.forFeature('registerOrgForm', regitserOrgFormReducer),
+    RegisterOrgCompletePageModule
   ],
   declarations: [
     RegisterOrgPageComponent

@@ -10,6 +10,7 @@ import { DoerUserModule, RegisterOrgPageComponent } from './modules/doer-user';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { RouterEffects } from './libs/doer-ionic-core';
 
 const auth0Config = {
   clientID: 'fovIqg72k1N80mu9lyfu3oupwqCPArPv',
@@ -30,7 +31,7 @@ const auth0Config = {
     BrowserModule,
     IonicModule.forRoot(MyApp),
     StoreModule.forRoot({}),
-    EffectsModule.forRoot([]),
+    EffectsModule.forRoot([ RouterEffects ]),
     StoreDevtoolsModule.instrument(),
     DoerUserModule
   ],

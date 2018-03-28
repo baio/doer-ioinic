@@ -1,12 +1,14 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy } from "@angular/core";
 import { Subscription } from "rxjs/Subscription";
-import { Field } from "../../../../libs/doer-ionic-core";
+import { Field, ionicGoAction } from "../../../../libs/doer-ionic-core";
 import { Store } from "@ngrx/store";
 import { RegisterOrgFormStore, RegisterOrgFormState } from "../register-org.types";
 import { Observable } from "rxjs/Observable";
 import { selectFormSubState, subFormAction } from "../store";
 import { FormState, FormAction } from "../../../../libs/doer-ngx-core";
+import { IonicPage } from "ionic-angular";
 
+// @IonicPage({name: 'register-org'})
 @Component({
     selector: 'dr-user-register-org-page',
     templateUrl: './register-org-page.component.html',
@@ -81,7 +83,7 @@ export class RegisterOrgPageComponent {
   }
 
   onCancel() {
-
+    this.store.dispatch(ionicGoAction({name: 'register-org-complete'}))
   }
 
 }
