@@ -1,23 +1,23 @@
 import { NgModule } from "@angular/core";
 import { IonicPageModule, IonicModule } from "ionic-angular";
 
-import { RegisterOrgPageComponent } from "./register-org-page.component";
+import { LoginPageComponent } from "./login-page.component";
 import { NgxFormModule, PagesModule } from "../../../../libs/doer-ionic-core";
 import { CommonModule } from "@angular/common";
 
 @NgModule({
   declarations: [
-    RegisterOrgPageComponent
+    LoginPageComponent
   ],
   imports: [
     CommonModule,
     PagesModule,
     IonicModule,
-    IonicPageModule.forChild(RegisterOrgPageComponent),
-    NgxFormModule
+    IonicPageModule.forChild(LoginPageComponent),
+    NgxFormModule,
   ],
   entryComponents: [
-    RegisterOrgPageComponent
+    LoginPageComponent
   ]
 })
-export class RegisterOrgPageModule {}
+export class LoginPageModule {}

@@ -16,6 +16,6 @@ export class FormService {
     }
 
     save: SaveFormFn = ({data}) =>
-        this.httpService.post('register-org', {...data.data })
+        this.httpService.post('login', {...data.data })
 
 }
