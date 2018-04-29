@@ -19,7 +19,7 @@ import {
   FormEffects as  LoginFormEffects
 } from './login';
 
-// import { HomePageComponent } from './home-page/home-page.component';
+//import { HomePageComponent } from './home-page/home-page.component';
 import { RegisterOrgCompletePageModule } from './register-org-complete/register-org-complete-page/register-org-complete-page.component.module';
 import { RegisterOrgPageModule } from './register-org/register-org-page/register-org-page.component.module';
 import { HomePageModule } from './home-page/home-page.component.module';
@@ -46,7 +46,7 @@ import { LoginPageModule } from './login/login-page/login-page.component.module'
     //HomePageComponent
   ],
   providers: [
-    { provide: HTTP_CONFIG, useValue: { baseUrl: 'http://localhost:7071/api/' } },
+    { provide: HTTP_CONFIG, useValue: { baseUrl: /*'http://localhost:7071/api/'*/ 'https://doer-stage.azurewebsites.net/api/' } },
     HttpService,
     RegitserOrgFormService,
     LoginFormService

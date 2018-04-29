@@ -11,9 +11,11 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { RouterEffects } from './libs/doer-ionic-core';
+import { AuthService, AUTH_SERVICE_CONFIG } from './libs/doer-ngx-core/auth/auth.service';
+import { Auth0Service } from './libs/doer-ngx-core/auth/auth0.service';
 
 const auth0Config = {
-  clientID: 'fovIqg72k1N80mu9lyfu3oupwqCPArPv',
+  clientID: 'QTVsqmat06hTQQeavpR2j7SUuBijI2Lm',
   domain: 'doer-stage.eu.auth0.com',
   responseType: 'token id_token',
   audience: 'https://doer-stage.eu.auth0.com/userinfo',
@@ -21,6 +23,17 @@ const auth0Config = {
   scope: 'openid'
 }
 
+
+/*
+const auth0Config = {
+  clientID: 'X3yEjXwCq4hYGtsOfFB6vTTB7Qeq2Uty',
+  domain: 'baio.auth0.com',
+  responseType: 'token id_token',
+  audience: 'https://baio.auth0.com/userinfo',
+  redirectUri: 'http://localhost:3000/callback',
+  scope: 'openid'
+};
+*/
 
 @NgModule({
   declarations: [
@@ -43,7 +56,9 @@ const auth0Config = {
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: AUTH_SERVICE_CONFIG, useValue: auth0Config },
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    {provide: AuthService, useClass: Auth0Service}
   ]
 })
 export class AppModule {}

@@ -1,7 +1,7 @@
 import { FormState, FormData } from './ngrx-form.types';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
-import { IAction, getPayload, filterMapRx, mapPropX } from '../../../doer-core';
+import { IAction, getPayload, filterMapRx, prop$ } from '../../../doer-core';
 import * as A from './actions';
 import { Actions } from '@ngrx/effects';
 import { filter, map, switchMap, withLatestFrom, mapTo, tap } from 'rxjs/operators';
@@ -43,7 +43,7 @@ export const saveFormEffect: SaveFormEffect = selectRoutePrms => selectFormState
     ($ =>
       $.pipe(
         withLatestFrom(
-          store$.select(selectFormState).pipe(mapPropX('data' as any)),
+          store$.select(selectFormState).pipe(prop$('data' as any)),
           (prms, stateData) => evolve({ data: data => ({ data,  stateData}) }, prms)
         ),
         switchMap(fn)

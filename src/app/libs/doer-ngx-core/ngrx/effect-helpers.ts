@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs/Observable';
 import { ActionPred, ActionResultFactory, ObservableMap, DisplayErrorFn, RoutePrms } from './ngrx.types';
 import { Store } from '@ngrx/store';
-import { IAction, IResultAction, filterMapRx, getPayload, isErr, mapPropX, guid } from '../../doer-core';
+import { IAction, IResultAction, filterMapRx, getPayload, isErr, guid, prop$ } from '../../doer-core';
 import { withLatestFrom, map, filter, tap, merge, mergeAll } from 'rxjs/operators';
 import { selectRouterIdPath, selectRouterSegments } from './ngrx-router/selectors';
 import { anyPass, F, cond } from 'ramda';
@@ -37,7 +37,7 @@ export const handleError = (opts: HandleErrorOpts) => (obs: Observable<any>) =>
   obs.pipe(
     filterMapRx(anyPass(opts.preds))(getPayload),
     filter(isErr),
-    mapPropX('error'),
+    prop$('error'),
     map(getErrorMessage(opts.httpErrorMessage, opts.unknownErrorMessage || opts.httpErrorMessage)),
     tap(opts.fDisplay),
     filter(F)

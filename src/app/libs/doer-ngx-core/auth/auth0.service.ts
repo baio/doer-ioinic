@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { AuthService } from './auth.service';
+import { Injectable, Inject } from '@angular/core';
+import { AuthService, AUTH_SERVICE_CONFIG } from './auth.service';
 import { Principal, Tokens } from './auth.types';
 import * as A0 from 'auth0-js';
 import * as jwt from 'jsonwebtoken';
@@ -7,18 +7,18 @@ import { path, tap, always, equals } from 'ramda';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { distinctUntilChanged } from 'rxjs/operators';
+import { err, Result } from '../../doer-core';
 
 export interface Auth0Config {
   clientID: string;
   domain: string;
-  // responseType: 'token id_token',
-  audience: 'https://doer-stage.eu.auth0.com/userinfo';
-  redirectUri: 'http://localhost:3000/callback';
-  //scope: 'openid'
+  audience: string;
+  redirectUri: string;
 }
 
 // https://auth0.com/docs/quickstart/spa/angular2/01-login
 // https://auth0.github.io/auth0.js/global.html#login
+// https://auth0.com/docs/libraries/auth0js/v9
 
 const profile2Principal = (profile: A0.AdfsUserProfile): Principal => ({
   id: profile.sub,
@@ -31,9 +31,8 @@ export class Auth0Service extends AuthService {
   private readonly auth0: A0.WebAuth;
   private readonly principal$ = new BehaviorSubject<Principal | null>(null);
 
-  constructor(config: Auth0Config) {
+  constructor(@Inject(AUTH_SERVICE_CONFIG) config: Auth0Config) {
     super();
-
     this.auth0 = new A0.WebAuth({
       clientID: config.clientID,
       domain: config.domain,
@@ -65,14 +64,13 @@ export class Auth0Service extends AuthService {
     });
   }
 
-  updatePrincipal(tokens: Tokens): Promise<Principal> {
-    return this.validateTokenAsync(tokens.idToken)
-      .then(profile => ({ profile, principal: profile2Principal(profile) }))
-      .then(({ profile, principal }) => {
-        this.updateStorage(tokens);
-        this.principal$.next(principal);
-        return principal;
-      });
+  updatePrincipal = (tokens: Tokens): Promise<Principal> =>  {
+    return this.validateTokenAsync(tokens.idToken).then(profile => {
+      const principal = profile2Principal(profile);
+      this.updateStorage(tokens);
+      this.principal$.next(principal);
+      return principal;
+    });
   }
 
   public logout(): void {
@@ -111,7 +109,7 @@ export class Auth0Service extends AuthService {
 
   private validateTokenAsync = (token: string): Promise<A0.AdfsUserProfile> => {
     return new Promise((resolve, reject) => {
-      this.auth0.validateToken(token, null, (err, { payload }) => {
+      this.auth0.validateToken(token, null, (err, payload ) => {
         if (err) {
           reject(err);
         } else {
