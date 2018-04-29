@@ -8,7 +8,7 @@ import { selectFormSubState, subFormAction } from "../store";
 import { FormState, FormAction } from "../../../../libs/doer-ngx-core";
 import { IonicPage } from "ionic-angular";
 
-// @IonicPage({name: 'register-org'})
+@IonicPage({name: 'register-org'})
 @Component({
     selector: 'dr-user-register-org-page',
     templateUrl: './register-org-page.component.html',

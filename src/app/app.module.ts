@@ -38,8 +38,7 @@ const auth0Config = {
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage,
-    RegisterOrgPageComponent
+    HomePage
   ],
   providers: [
     StatusBar,
