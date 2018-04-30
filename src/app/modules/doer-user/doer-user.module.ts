@@ -46,7 +46,7 @@ import { LoginPageModule } from './login/login-page/login-page.component.module'
     //HomePageComponent
   ],
   providers: [
-    { provide: HTTP_CONFIG, useValue: { baseUrl: /*'http://localhost:7071/api/'*/ 'https://doer-stage.azurewebsites.net/api/' } },
+    { provide: HTTP_CONFIG, useValue: { baseUrl: 'http://localhost:7071/api/'/* 'https://doer-stage.azurewebsites.net/api/'*/ } },
     HttpService,
     RegitserOrgFormService,
     LoginFormService

@@ -4,7 +4,7 @@ import { Actions, Effect } from '@ngrx/effects';
 import { LoginFormState } from "../login.types";
 import { FormService } from "./data/form.service";
 import { CommonFormEffects, ionicGoAction } from "../../../../libs/doer-ionic-core";
-import { subFormActionsWrap, CommonFormEffectTypes, DisplayErrorFn, isSaveFormResultAction } from "../../../../libs/doer-ngx-core";
+import { subFormActionsWrap, CommonFormEffectTypes, DisplayErrorFn, isSaveFormResultAction, isSaveFormAction } from "../../../../libs/doer-ngx-core";
 import { isSubFormAction, subFormAction } from "./actions";
 
 import { ToastController, NavController } from "ionic-angular";
@@ -37,24 +37,19 @@ export class FormEffects extends CommonFormEffects {
       actions$,
       wrap,
       formService.load,
-      formService.save,
+      formService.login,
       errFn(toastController)
     );
   }
 
-  @Effect() common = this.createCommonEffects([]);
+  //@Effect() common = this.createCommonEffects([CommonFormEffectTypes.SaveForm]);
 
-  @Effect()
+  @Effect({dispatch: false})
   loginSuccess =
     this.actions$.pipe(
       filterMap$(isSubFormAction)(getPayload),
-      filterMap$(isSaveFormResultAction)(getPayload),
-      // set auth token to http service
-      flatMapR$(
-        pipe(this.authService.updatePrincipal, ofPromiseR$)
-      ),
-      mapR$(_ => ionicGoAction({name: 'register-org-complete'})),
-      filterMap$(isOK)(prop('value'))
+      filterMap$(isSaveFormAction)(getPayload),
+      tap(this.authService.login)
     )
 
 }

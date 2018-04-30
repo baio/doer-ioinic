@@ -11,6 +11,7 @@ export const AUTH_SERVICE_CONFIG = new InjectionToken('AUTH_SERVICE_CONFIG');
 export abstract class  AuthService {
     token: string | null;
     principal: Observable<Principal | null>;
-    abstract updatePrincipal = (tokens: Tokens): Promise<Principal | null> => null;
+    abstract login = (info: {email: string, password: string}): Promise<any> => null;
+    abstract handleAuthentication = (): Promise<Principal | null> => null;
 }
 

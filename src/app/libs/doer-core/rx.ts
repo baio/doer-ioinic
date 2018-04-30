@@ -157,3 +157,7 @@ export const lift2R$ = <S, S1, S2>(f: (x: S) => (y: S1) => S2) => ($: Observable
  */
 export const lift3R$ = <S, S1, S2, S3>(f: (x: S) => (y: S1) => (z: S2) => S3) => ($: Observable<[Result<S>, Result<S1>, Result<S2>]>): Observable<Result<S3>> =>
   $.pipe(map(([a, b, c]) => lift3R(f)(a)(b)(c) as any));
+
+
+
+  export type ObservableResult<T> = Observable<Result<T>>;

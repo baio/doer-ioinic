@@ -15,7 +15,7 @@ export class FormService {
         return of(ok({}));
     }
 
-    save: SaveFormFn = ({data}) =>
+    login: SaveFormFn = ({data}) =>
         this.httpService.post('login', {...data.data })
 
 }

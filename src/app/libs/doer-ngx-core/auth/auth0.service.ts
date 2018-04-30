@@ -57,20 +57,22 @@ export class Auth0Service extends AuthService {
     return this.isExpired ? null : localStorage.getItem('access_token');
   }
 
-  login(email: string, password: string) {
-    this.auth0.login({ email, password }, err => {
-      // TODO : handle error !
-      console.error(err);
-    });
+  login = (info) => {
+    return new Promise((resove, reject) =>
+      // never resolve sinse login will redirect user to a new page
+      this.auth0.login({ email: 'max-3@gmail.com', password: 'Password-org-3', realm: 'Username-Password-Authentication', prompt: 'none' } as any, err => {
+        // TODO : handle error !
+        reject(err);
+      })
+    )
   }
 
-  updatePrincipal = (tokens: Tokens): Promise<Principal> =>  {
-    return this.validateTokenAsync(tokens.idToken).then(profile => {
-      const principal = profile2Principal(profile);
-      this.updateStorage(tokens);
-      this.principal$.next(principal);
-      return principal;
-    });
+  updatePrincipal = (tokens: A0.Auth0DecodedHash): Principal =>  {
+    const principal = profile2Principal(tokens.idTokenPayload);
+    console.log('===', principal);
+    this.updateStorage(tokens);
+    this.principal$.next(principal);
+    return principal;
   }
 
   public logout(): void {
@@ -81,15 +83,13 @@ export class Auth0Service extends AuthService {
     this.principal$.next(null);
   }
 
-  private updateStorage = (tokens: Tokens) => (profile: A0.AdfsUserProfile) => (
-    principal: Principal
-  ) => {
+  private updateStorage = (hash: A0.Auth0DecodedHash): void => {
     const expiresAt = JSON.stringify(
-      profile['exp'] * 1000 + new Date().getTime()
+      hash.expiresIn * 1000 + new Date().getTime()
     );
 
-    localStorage.setItem('access_token', tokens.accessToken);
-    localStorage.setItem('id_token', tokens.idToken);
+    localStorage.setItem('access_token', hash.accessToken);
+    localStorage.setItem('id_token', hash.idToken);
     localStorage.setItem('expires_at', expiresAt);
   };
 
@@ -107,6 +107,7 @@ export class Auth0Service extends AuthService {
       })
     );
 
+  /*
   private validateTokenAsync = (token: string): Promise<A0.AdfsUserProfile> => {
     return new Promise((resolve, reject) => {
       this.auth0.validateToken(token, null, (err, payload ) => {
@@ -118,6 +119,7 @@ export class Auth0Service extends AuthService {
       });
     });
   };
+  */
 
   public handleAuthentication = () =>
     this.parseHashAsync().then(this.updatePrincipal);
