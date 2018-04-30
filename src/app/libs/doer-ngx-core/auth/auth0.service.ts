@@ -69,7 +69,6 @@ export class Auth0Service extends AuthService {
 
   updatePrincipal = (tokens: A0.Auth0DecodedHash): Principal =>  {
     const principal = profile2Principal(tokens.idTokenPayload);
-    console.log('===', principal);
     this.updateStorage(tokens);
     this.principal$.next(principal);
     return principal;
@@ -106,20 +105,6 @@ export class Auth0Service extends AuthService {
         }
       })
     );
-
-  /*
-  private validateTokenAsync = (token: string): Promise<A0.AdfsUserProfile> => {
-    return new Promise((resolve, reject) => {
-      this.auth0.validateToken(token, null, (err, payload ) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(payload);
-        }
-      });
-    });
-  };
-  */
 
   public handleAuthentication = () =>
     this.parseHashAsync().then(this.updatePrincipal);

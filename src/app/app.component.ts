@@ -6,6 +6,7 @@ import { HomePageComponent } from './modules/doer-user/home-page/home-page.compo
 import { AuthService } from './libs/doer-ngx-core/auth/auth.service';
 import { Store } from '@ngrx/store';
 import { ionicGoAction } from './libs/doer-ionic-core';
+import { loginSuccessAction } from './libs/doer-ngx-core/ngrx/ngrx-auth/actions';
 
 
 @Component({
@@ -19,6 +20,7 @@ export class MyApp {
     auth.handleAuthentication().then(x => {
       console.log('auth success', x);
       store.dispatch(ionicGoAction({name: 'home'}));
+      store.dispatch(loginSuccessAction(x));
     }).catch(() => Promise.resolve(true));
 
     platform.ready().then(() => {

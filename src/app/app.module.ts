@@ -11,8 +11,10 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { RouterEffects } from './libs/doer-ionic-core';
+import { NgrxConstants } from './libs/doer-ngx-core';
 import { AuthService, AUTH_SERVICE_CONFIG } from './libs/doer-ngx-core/auth/auth.service';
 import { Auth0Service } from './libs/doer-ngx-core/auth/auth0.service';
+import { authReducer } from './libs/doer-ngx-core/ngrx/ngrx-auth/reducer';
 
 /*
 const auth0Config = {
@@ -56,8 +58,8 @@ const auth0Config = {
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
-    StoreModule.forRoot({}),
-    EffectsModule.forRoot([ RouterEffects ]),
+    StoreModule.forRoot(NgrxConstants.REDUCERS),
+    EffectsModule.forRoot([RouterEffects]),
     StoreDevtoolsModule.instrument(),
     DoerUserModule
   ],
