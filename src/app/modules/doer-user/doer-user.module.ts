@@ -25,6 +25,7 @@ import { RegisterOrgPageModule } from './register-org/register-org-page/register
 import { HomePageModule } from './home-page/home-page.component.module';
 import { LoginPageModule } from './login/login-page/login-page.component.module';
 import { ProfilePageModule } from './profile-page/profile-page.component.module';
+import { AuthorizingPageComponent } from './authorizing-page/authorizing-page.component';
 
 @NgModule({
   imports: [
@@ -40,12 +41,16 @@ import { ProfilePageModule } from './profile-page/profile-page.component.module'
     LoginPageModule,
     ProfilePageModule,
     HomePageModule
+
+
   ],
   declarations: [
     //HomePageComponent
+    AuthorizingPageComponent
   ],
   exports: [
     //HomePageComponent
+    AuthorizingPageComponent
   ],
   providers: [
     { provide: HTTP_CONFIG, useValue: { baseUrl: 'http://localhost:7071/api/'/* 'https://doer-stage.azurewebsites.net/api/'*/ } },
@@ -54,6 +59,7 @@ import { ProfilePageModule } from './profile-page/profile-page.component.module'
     LoginFormService
   ],
   entryComponents: [
+    AuthorizingPageComponent
   ]
 })
 export class DoerUserModule {}
