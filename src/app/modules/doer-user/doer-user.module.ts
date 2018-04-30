@@ -24,6 +24,7 @@ import { RegisterOrgCompletePageModule } from './register-org-complete/register-
 import { RegisterOrgPageModule } from './register-org/register-org-page/register-org-page.component.module';
 import { HomePageModule } from './home-page/home-page.component.module';
 import { LoginPageModule } from './login/login-page/login-page.component.module';
+import { ProfilePageModule } from './profile-page/profile-page.component.module';
 
 @NgModule({
   imports: [
@@ -37,6 +38,7 @@ import { LoginPageModule } from './login/login-page/login-page.component.module'
     RegisterOrgCompletePageModule,
     RegisterOrgPageModule,
     LoginPageModule,
+    ProfilePageModule,
     HomePageModule
   ],
   declarations: [

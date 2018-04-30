@@ -19,8 +19,9 @@ export class MyApp {
 
     auth.handleAuthentication().then(x => {
       console.log('auth success', x);
-      store.dispatch(ionicGoAction({name: 'home'}));
       store.dispatch(loginSuccessAction(x));
+      store.dispatch(ionicGoAction({name: 'profile'}));
+
     }).catch(() => Promise.resolve(true));
 
     platform.ready().then(() => {

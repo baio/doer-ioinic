@@ -22,7 +22,7 @@ export interface Auth0Config {
 
 const profile2Principal = (profile: A0.AdfsUserProfile): Principal => ({
   id: profile.sub,
-  name: profile.name,
+  name: profile['https://doer.auth.com/name'],
   avatar: profile.picture
 });
 

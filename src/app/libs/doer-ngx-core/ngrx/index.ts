@@ -1,9 +1,11 @@
 export * from './ngrx.types';
 export * from './ngrx-form';
+export * from './ngrx-auth';
 
 import { RouterEffects } from './ngrx-router/effects';
-import { authReducer } from './ngrx-auth/reducer';
 import { ActionReducerMap } from '@ngrx/store';
+
+import { authReducer } from './ngrx-auth/reducer';
 import { AuthStore } from './ngrx-auth/ngrx-auth.types';
 
 const effects: any[] = [ RouterEffects ];
