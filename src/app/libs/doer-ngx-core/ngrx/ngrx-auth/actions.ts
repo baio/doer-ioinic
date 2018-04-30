@@ -2,11 +2,17 @@ import { Action } from '@ngrx/store';
 import { IAction, action, isAction, IResultAction, resultAction, isResultAction } from '../../../doer-core';
 import { Principal } from '../../auth/auth.types';
 
-export type LoginSuccessType = '[ngx-core] login success';
-export const loginSuccessConst = '[ngx-core] login success';
-export type LoginSuccessAction = IAction<LoginSuccessType, Principal>;
-export const loginSuccessAction = action<LoginSuccessType, Principal>(loginSuccessConst);
-export const isLoginSuccessAction = isAction<LoginSuccessType, Principal>(loginSuccessConst);
+export type LoginType = '[ngx-core] login';
+export const loginConst = '[ngx-core] login';
+export type LoginAction = IResultAction<LoginType, Principal>;
+export const loginAction = resultAction<LoginType, Principal>(loginConst);
+export const isLoginAction = isResultAction<LoginType, Principal>(loginConst);
+
+export type LoginResultType = '[ngx-core] login result';
+export const loginResultConst = '[ngx-core] login result';
+export type LoginResultAction = IResultAction<LoginResultType, Principal>;
+export const loginResultAction = resultAction<LoginResultType, Principal>(loginResultConst);
+export const isLoginResultAction = isResultAction<LoginResultType, Principal>(loginResultConst);
 
 export type LogoutType = '[ngx-core] logout';
 export const logoutConst = '[ngx-core] logout';
@@ -20,4 +26,4 @@ export type LogoutResultAction = IResultAction<LogoutResultType, void>;
 export const logoutResultAction = resultAction<LogoutResultType, void>(logoutResultConst);
 export const isLogoutResultAction = isResultAction<LogoutResultType, void>(logoutResultConst);
 
-export type Actions = LoginSuccessAction | LogoutAction | LogoutResultAction;
+export type Actions = LoginAction | LoginResultAction | LogoutAction | LogoutResultAction;

@@ -6,7 +6,8 @@ import { HomePageComponent } from './modules/doer-user/home-page/home-page.compo
 import { AuthService } from './libs/doer-ngx-core/auth/auth.service';
 import { Store } from '@ngrx/store';
 import { ionicGoAction } from './libs/doer-ionic-core';
-import { loginSuccessAction } from './libs/doer-ngx-core/ngrx/ngrx-auth/actions';
+import { loginResultAction } from './libs/doer-ngx-core/ngrx/ngrx-auth/actions';
+import { ok } from './libs/doer-core';
 
 
 @Component({
@@ -18,10 +19,9 @@ export class MyApp {
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, auth: AuthService, store: Store<any>) {
 
     const authPromise = auth.handleAuthentication().then(res => {
-      console.log('+++', res);
       if (res) {
         console.log('auth success', res);
-        store.dispatch(loginSuccessAction(res.principal));
+        store.dispatch(loginResultAction(ok(res.principal)));
         store.dispatch(ionicGoAction({name: 'profile', animate: false}));
       } else {
         console.log('user not logined');

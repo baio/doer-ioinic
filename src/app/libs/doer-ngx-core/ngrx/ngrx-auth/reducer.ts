@@ -14,8 +14,8 @@ export const authReducer = (state = defaultAuthState, action: A.Actions): AuthSt
   switch (action.type) {
     case A.logoutResultConst:
       return isOK(action.payload as any) ? assoc('principal', null, state) : state;
-    case A.loginSuccessConst:
-      return assoc('principal', action.payload, state);
+    case A.loginResultConst:
+      return isOK(action.payload) ? assoc('principal', action.payload.value, state) : state;
     default:
       return state;
   }

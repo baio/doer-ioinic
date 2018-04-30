@@ -65,7 +65,7 @@ export class Auth0Service extends AuthService {
 
   login = info => {
     return new Promise((resove, reject) =>
-      // never resolve sinse login will redirect user to a new page
+      // never resolve since login will redirect user to a new page
       this.auth0.login(
         {
           email: 'max-3@gmail.com',
