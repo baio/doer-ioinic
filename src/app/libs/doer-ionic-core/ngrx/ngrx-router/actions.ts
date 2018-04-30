@@ -3,6 +3,7 @@ import { IAction, action, isAction } from "../../../doer-core";
 export interface IonicGoActionPayload {
     name: string;
     id?: string;
+    animate?: boolean;
   }
 
   export type IonicGoActionType = '[ionic-core] Router Go';

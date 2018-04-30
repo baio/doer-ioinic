@@ -7,11 +7,17 @@ import { Principal, Tokens } from './auth.types';
 
 export const AUTH_SERVICE_CONFIG = new InjectionToken('AUTH_SERVICE_CONFIG');
 
+interface HandleAuthorizationResult {
+    principal: Principal;
+    fromCallback: boolean;
+}
+
 @Injectable()
 export abstract class  AuthService {
     token: string | null;
     principal: Observable<Principal | null>;
     abstract login = (info: {email: string, password: string}): Promise<any> => null;
-    abstract handleAuthentication = (): Promise<Principal | null> => null;
+    abstract logout = (): void => null;
+    abstract handleAuthentication = (): Promise<HandleAuthorizationResult | null> => null;
 }
 

@@ -4,7 +4,7 @@ import { Store } from "@ngrx/store";
 import { Observable } from "rxjs/Observable";
 import { IonicPage } from "ionic-angular";
 import { ionicGoAction } from "../../../libs/doer-ionic-core";
-import { Principal, AuthStore, selectPrincipal } from "../../../libs/doer-ngx-core";
+import { Principal, AuthStore, selectPrincipal, logoutAction } from "../../../libs/doer-ngx-core";
 
 @IonicPage({name: 'profile'})
 @Component({
@@ -23,12 +23,7 @@ export class ProfilePageComponent {
   }
 
   onLogout() {
-    this.store.dispatch(ionicGoAction({name: 'logout'}))
+    this.store.dispatch(logoutAction())
   }
-
-  goHome() {
-    this.store.dispatch(ionicGoAction({name: 'home'}))
-  }
-
 
 }

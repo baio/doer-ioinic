@@ -18,8 +18,8 @@ export class RouterEffects {
   navigate$ = this.actions$.pipe(
     filter(isIonicGoAction),
     map(action => action.payload),
-    tap(({ name, id }) => {
-      this.navController.push(name, id ? { id } : undefined);
+    tap(({ name, id, animate }) => {
+      this.navController.push(name, id ? { id } : undefined, { animate });
     })
   );
 

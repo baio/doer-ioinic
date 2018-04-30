@@ -17,14 +17,21 @@ export class MyApp {
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, auth: AuthService, store: Store<any>) {
 
-    auth.handleAuthentication().then(x => {
-      console.log('auth success', x);
-      store.dispatch(loginSuccessAction(x));
-      store.dispatch(ionicGoAction({name: 'profile'}));
+    const authPromise = auth.handleAuthentication().then(res => {
+      console.log('+++', res);
+      if (res) {
+        console.log('auth success', res);
+        store.dispatch(loginSuccessAction(res.principal));
+        store.dispatch(ionicGoAction({name: 'profile', animate: false}));
+      } else {
+        console.log('user not logined');
+        store.dispatch(ionicGoAction({name: 'home', animate: false}));
+      }
+    });
 
-    }).catch(() => Promise.resolve(true));
+    const platformPromise = platform.ready();
 
-    platform.ready().then(() => {
+    Promise.all([authPromise, platformPromise]).then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
