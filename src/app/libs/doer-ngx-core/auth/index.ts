@@ -1,3 +1,3 @@
 export * from './auth.service';
 export * from './auth.types';
-export * from './auth0.service';
+export * from './auth0-implicit.service';

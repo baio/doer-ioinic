@@ -29,7 +29,7 @@ const profile2Principal = (profile: A0.AdfsUserProfile): Principal => ({
 });
 
 @Injectable()
-export class Auth0Service extends AuthService {
+export class Auth0ImplicitService extends AuthService {
 
   private refreshSub: any;
   private readonly auth0: A0.WebAuth;
@@ -55,12 +55,11 @@ export class Auth0Service extends AuthService {
    * if user not logined returns null
    */
   get isExpired(): boolean | null {
-    const expiredAtStr = localStorage.getItem('expires_at');
-    if (!expiredAtStr) {
+    const expiresAt = +localStorage.getItem('expires_at');
+    if (!expiresAt) {
       return null;
     }
-    const expiresAt = JSON.parse(expiredAtStr);
-    return new Date().getTime() < expiresAt;
+    return new Date().getTime() > expiresAt;
   }
 
   get principal(): Observable<Principal | null> {
@@ -78,15 +77,14 @@ export class Auth0Service extends AuthService {
         {
           email: 'max-3@gmail.com',
           password: 'Password-org-3',
-          realm: 'Username-Password-Authentication',
-          prompt: 'none'
-        } as any,
+          realm: 'Username-Password-Authentication'
+        },
         err => {
           // TODO : handle error !
           reject(err);
         }
       )
-    );
+    ) as any;
   };
 
   updatePrincipal = (tokens: A0.Auth0DecodedHash): Principal => {
@@ -101,6 +99,7 @@ export class Auth0Service extends AuthService {
     localStorage.removeItem('access_token');
     localStorage.removeItem('id_token');
     localStorage.removeItem('expires_at');
+    localStorage.removeItem('nonce');
     this.unscheduleRenewal();
     this.principal$.next(null);
     this.auth0.logout({ returnTo: this.config.redirectUri});
@@ -132,7 +131,8 @@ export class Auth0Service extends AuthService {
     );
 
   private tryLoginFromLocal = (): Promise<Principal | null> => {
-    if (this.isExpired && localStorage.getItem('nonce')) {
+    console.log('tryLoginFromLocal', this.isExpired, localStorage.getItem('nonce'));
+    if (!this.isExpired && localStorage.getItem('nonce')) {
       return new Promise(resolve => {
         this.auth0.validateToken(
           localStorage.getItem('id_token'),

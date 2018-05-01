@@ -11,7 +11,7 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { RouterEffects } from './libs/doer-ionic-core';
-import { NgrxConstants, AuthService, AUTH_SERVICE_CONFIG, Auth0Service, authReducer, AuthEffects } from './libs/doer-ngx-core';
+import { NgrxConstants, AuthService, AUTH_SERVICE_CONFIG, Auth0ImplicitService, authReducer, AuthEffects } from './libs/doer-ngx-core';
 
 
 
@@ -64,7 +64,7 @@ const auth0Config = {
     SplashScreen,
     {provide: AUTH_SERVICE_CONFIG, useValue: auth0Config },
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    {provide: AuthService, useClass: Auth0Service}
+    {provide: AuthService, useClass: Auth0ImplicitService}
   ]
 })
 export class AppModule {}
