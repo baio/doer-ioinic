@@ -6,8 +6,10 @@ import * as jwt from 'jsonwebtoken';
 import { path, tap, always, equals } from 'ramda';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { distinctUntilChanged, mergeMap, flatMap } from 'rxjs/operators';
 import { err, Result } from '../../doer-core';
+import { of } from 'rxjs/Observable/of';
+import { timer } from 'rxjs/observable/timer';
 
 export interface Auth0Config {
   clientID: string;
@@ -28,6 +30,8 @@ const profile2Principal = (profile: A0.AdfsUserProfile): Principal => ({
 
 @Injectable()
 export class Auth0Service extends AuthService {
+
+  private refreshSub: any;
   private readonly auth0: A0.WebAuth;
   private readonly principal$ = new BehaviorSubject<Principal | null>(null);
 
@@ -41,6 +45,10 @@ export class Auth0Service extends AuthService {
       redirectUri: config.redirectUri,
       scope: 'openid profile',
     });
+  }
+
+  get isAuthenticated(): boolean {
+    return !!localStorage.getItem('id_token');
   }
 
   /**
@@ -93,6 +101,7 @@ export class Auth0Service extends AuthService {
     localStorage.removeItem('access_token');
     localStorage.removeItem('id_token');
     localStorage.removeItem('expires_at');
+    this.unscheduleRenewal();
     this.principal$.next(null);
     this.auth0.logout({ returnTo: this.config.redirectUri});
   };
@@ -144,13 +153,74 @@ export class Auth0Service extends AuthService {
 
   public handleAuthentication = () =>
     this.tryLoginFromLocal()
-      .then(
-        res =>
-          res
-            ? { principal: res, fromCallback: false }
-            : this.parseHashAsync()
+      .then(res =>{
+          if (res) {
+            //loginned from stored session
+            return { principal: res, fromCallback: false };
+          } else {
+            // try to pase hash with auth if esixsts
+            return this.parseHashAsync()
                 .then(this.updatePrincipal)
-                .then(res => ({ principal: res, fromCallback: true }))
-      )
+                .then(res => ({ principal: res, fromCallback: true }));
+          }
+      })
+      .then(res => {
+        // user logined, schedule renewal
+        this.scheduleRenewal();
+        return res;
+      })
       .catch(() => Promise.resolve(null));
+
+  // token renewal
+
+  private renewTokenAsync = (): Promise<A0.Auth0DecodedHash> => {
+    console.log('renewal started');
+    return new Promise((resolve, reject) => this.auth0.checkSession({}, (err, result) => {
+      console.log('renewTokenAsync', !!result);
+      if (err) {
+        console.log(err);
+        reject(err);
+      } else {
+        resolve(result)
+      }
+    }));
+  }
+
+  private scheduleRenewal() {
+
+    console.log('schedule renewal');
+
+    this.unscheduleRenewal();
+
+    const expiresAt = JSON.parse(window.localStorage.getItem('expires_at'));
+
+    const expiresIn$ = of(expiresAt).pipe(
+      mergeMap(
+        expiresAt => {
+          const now = Date.now();
+          // Use timer to track delay until expiration
+          // to run the refresh at the proper time
+          return timer(Math.max(1, expiresAt - now));
+        }
+      )
+    );
+
+    // Once the delay time from above is
+    // reached, get a new JWT and schedule
+    // additional refreshes
+    this.refreshSub = expiresIn$.pipe(
+        flatMap(this.renewTokenAsync)
+      ).subscribe(result => {
+        this.updateStorage(result);
+        this.scheduleRenewal();
+      }
+    );
+  }
+
+  private unscheduleRenewal() {
+    if (this.refreshSub) {
+      this.refreshSub.unsubscribe();
+    }
+  }
+
 }
