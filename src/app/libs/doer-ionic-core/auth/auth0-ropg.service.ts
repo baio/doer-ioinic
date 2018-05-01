@@ -2,6 +2,7 @@
 // For cordova apps (required refresh token stored safely)
 // https://auth0.com/docs/api-auth/grant/password
 import { Injectable, Inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import * as A0 from 'auth0-js';
 import * as jwt from 'jsonwebtoken';
 import { path, tap, always, equals } from 'ramda';
@@ -11,7 +12,7 @@ import { distinctUntilChanged, mergeMap, flatMap } from 'rxjs/operators';
 import { err, Result, isOK } from '../../doer-core';
 import { of } from 'rxjs/Observable/of';
 import { timer } from 'rxjs/observable/timer';
-import { Principal, AuthService, AUTH_SERVICE_CONFIG, Tokens, HttpService } from '../../doer-ngx-core';
+import { Principal, AuthService, AUTH_SERVICE_CONFIG, Tokens, HttpService, HTTP_CONFIG, HttpConfig } from '../../doer-ngx-core';
 
 export interface Auth0Config {
   clientID: string;
@@ -43,7 +44,11 @@ export class Auth0ROPGService extends AuthService {
   refreshSub: any;
   private readonly principal$ = new BehaviorSubject<Principal | null>(null);
 
-  constructor(@Inject(AUTH_SERVICE_CONFIG) private readonly config: Auth0Config, private readonly httpService: HttpService) {
+  constructor(
+    @Inject(HTTP_CONFIG) private readonly httpConfig: HttpConfig,
+    @Inject(AUTH_SERVICE_CONFIG) private readonly config: Auth0Config,
+    private readonly httpClient: HttpClient
+  ) {
     super();
     this.auth0 = new A0.WebAuth({
       clientID: config.clientID,
@@ -63,12 +68,8 @@ export class Auth0ROPGService extends AuthService {
    * if user not logined returns null
    */
   get isExpired(): boolean | null {
-    const expiredAtStr = localStorage.getItem('expires_at');
-    if (!expiredAtStr) {
-      return null;
-    }
-    const expiresAt = JSON.parse(expiredAtStr);
-    return new Date().getTime() < expiresAt;
+    const expiresAt = +localStorage.getItem('expires_at');
+    return new Date().getTime() > expiresAt;
   }
 
   get principal(): Observable<Principal | null> {
@@ -86,13 +87,12 @@ export class Auth0ROPGService extends AuthService {
   };
 
   login = info =>
-      this.httpService.post<LoginResult>('login', {email: 'max-3@gmail.com', password: 'Password-org-3'})
+      this.httpClient.post<LoginResult>(`${this.httpConfig.baseUrl}login`, {email: 'max-3@gmail.com', password: 'Password-org-3'})
       .toPromise()
-      .then(x => isOK(x) ? Promise.resolve(x.value) : Promise.reject(x.error))
       .then(tokens => this.validateTokenAsync(tokens.idToken).then(profile => ({ profile,  tokens})))
       .then(({ profile,  tokens }) => {
         console.log('+++', profile, tokens);
-        this.updateStorage(1, tokens);
+        this.updateStorage(profile['exp'], tokens);
         return this.updatePrincipal(profile);
       });
 
@@ -119,15 +119,15 @@ export class Auth0ROPGService extends AuthService {
 
   //
 
-  /*
-  private tryLoginFromLocalAsync = (): Promise<Principal | null> => {
+
+  private tryLoginFromLocalAsync = (): Promise<A0.AdfsUserProfile | null> => {
+    console.log('zzz', this.isExpired);
     if (!this.isExpired) {
       return this.validateTokenAsync(localStorage.getItem('id_token'));
     } else {
       return Promise.resolve(null);
     }
   };
-  */
 
 
   private validateTokenAsync = (token): Promise<A0.AdfsUserProfile | null> => {
@@ -137,6 +137,7 @@ export class Auth0ROPGService extends AuthService {
           null,
           (err, res) => {
             if (err) {
+              console.log('validateTokenAsync:err', err);
               reject(err);
             } else {
               resolve(res);
@@ -146,27 +147,20 @@ export class Auth0ROPGService extends AuthService {
       });
   }
 
-  public handleAuthentication = () => Promise.resolve(null);
-    /*
+  public handleAuthentication = () =>
     this.tryLoginFromLocalAsync()
-      .then(res =>{
-          if (res) {
-            //loginned from stored session
-            return { principal: res, fromCallback: false };
-          } else {
-            // try to login from refresh token
-            this.renewTokenAsync()
-
-            .then(res => ({ principal: res, fromCallback: false }));
-          }
+      .then(profile => {
+          console.log('111', profile);
+          //loginned from stored session
+          return { principal: profile2Principal(profile), fromCallback: false };
       })
       .then(res => {
         // user logined, schedule renewal
-        this.scheduleRenewal();
+        //this.scheduleRenewal();
         return res;
       })
       .catch(() => Promise.resolve(null));
-      */
+
 
   // token renewal
 

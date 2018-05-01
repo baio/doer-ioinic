@@ -12,9 +12,10 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { RouterEffects } from './libs/doer-ionic-core';
 import { NgrxConstants, AuthService, AUTH_SERVICE_CONFIG, Auth0ImplicitService, authReducer, AuthEffects } from './libs/doer-ngx-core';
+import { Auth0ROPGService } from './libs/doer-ionic-core/auth/auth0-ropg.service';
 
 
-
+/*
 const auth0Config = {
   // Needed for Auth0 (capitalization: ID):
   clientID: 'QTVsqmat06hTQQeavpR2j7SUuBijI2Lm',
@@ -26,20 +27,18 @@ const auth0Config = {
   responseType: 'token id_token',
   scope: 'openid profile'
 };
+*/
 
-/*
+
 const auth0Config = {
   // Needed for Auth0 (capitalization: ID):
-  clientID: 'X3yEjXwCq4hYGtsOfFB6vTTB7Qeq2Uty',
-  // Needed for Auth0Cordova (capitalization: Id):
-  clientId: 'X3yEjXwCq4hYGtsOfFB6vTTB7Qeq2Uty',
+  clientID: '5Svk7WPecVbRE165tCEYNWITRbVsIXE4',
   domain: 'baio.auth0.com',
-  packageIdentifier: 'io.ionic.starter', // config.xml widget ID, e.g., com.auth0.ionic
   redirectUri: 'http://doer-local:8100',
   responseType: 'token id_token',
   scope: 'openid profile'
 };
-*/
+
 
 @NgModule({
   declarations: [
@@ -64,7 +63,7 @@ const auth0Config = {
     SplashScreen,
     {provide: AUTH_SERVICE_CONFIG, useValue: auth0Config },
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    {provide: AuthService, useClass: Auth0ImplicitService}
+    {provide: AuthService, useClass: Auth0ROPGService}
   ]
 })
 export class AppModule {}

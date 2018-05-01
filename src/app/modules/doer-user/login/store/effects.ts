@@ -4,13 +4,13 @@ import { Actions, Effect } from '@ngrx/effects';
 import { LoginFormState } from "../login.types";
 import { FormService } from "./data/form.service";
 import { CommonFormEffects, ionicGoAction } from "../../../../libs/doer-ionic-core";
-import { subFormActionsWrap, CommonFormEffectTypes, DisplayErrorFn, isSaveFormResultAction, isSaveFormAction } from "../../../../libs/doer-ngx-core";
+import { subFormActionsWrap, CommonFormEffectTypes, DisplayErrorFn, isSaveFormResultAction, isSaveFormAction, loginAction, isLoginResultAction, isLogoutResultAction } from "../../../../libs/doer-ngx-core";
 import { isSubFormAction, subFormAction } from "./actions";
 
 import { ToastController, NavController } from "ionic-angular";
 import { filterMapRx, getPayload, isOK, filterMap$, mapR$, flatMapR$, mapR, ofPromiseR$ } from "../../../../libs/doer-core";
 import { AuthService } from "../../../../libs/doer-ngx-core/auth/auth.service";
-import { filter, map, tap, flatMap } from "rxjs/operators";
+import { filter, map, tap, flatMap, mapTo } from "rxjs/operators";
 import { prop, compose, pipe } from "ramda";
 import { of } from "rxjs/Observable/of";
 
@@ -42,14 +42,30 @@ export class FormEffects extends CommonFormEffects {
     );
   }
 
-  //@Effect() common = this.createCommonEffects([CommonFormEffectTypes.SaveForm]);
+  @Effect() common = this.createCommonEffects([CommonFormEffectTypes.SaveForm]);
 
-  @Effect({dispatch: false})
-  loginSuccess =
+  @Effect()
+  login =
     this.actions$.pipe(
       filterMap$(isSubFormAction)(getPayload),
       filterMap$(isSaveFormAction)(getPayload),
-      tap(this.authService.login)
+      map(loginAction)
+    )
+
+  @Effect()
+  loginSuccess =
+    this.actions$.pipe(
+      filterMap$(isLoginResultAction)(getPayload),
+      filter(isOK),
+      mapTo(ionicGoAction({ name: 'profile' }))
+    )
+
+  @Effect()
+  logoutSuccess =
+    this.actions$.pipe(
+      filterMap$(isLogoutResultAction)(getPayload),
+      filter(isOK),
+      mapTo(ionicGoAction({ name: 'home' }))
     )
 
 }

@@ -26,9 +26,11 @@ import { HomePageModule } from './home-page/home-page.component.module';
 import { LoginPageModule } from './login/login-page/login-page.component.module';
 import { ProfilePageModule } from './profile-page/profile-page.component.module';
 import { AuthorizingPageComponent } from './authorizing-page/authorizing-page.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   imports: [
+    HttpClientModule,
     CommonModule,
     IonicModule,
     HttpModule,
@@ -41,8 +43,6 @@ import { AuthorizingPageComponent } from './authorizing-page/authorizing-page.co
     LoginPageModule,
     ProfilePageModule,
     HomePageModule
-
-
   ],
   declarations: [
     //HomePageComponent
