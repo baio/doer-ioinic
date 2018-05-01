@@ -29,7 +29,6 @@ const auth0Config = {
 };
 */
 
-
 const auth0Config = {
   // Needed for Auth0 (capitalization: ID):
   clientID: '5Svk7WPecVbRE165tCEYNWITRbVsIXE4',

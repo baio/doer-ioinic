@@ -86,15 +86,20 @@ export class Auth0ROPGService extends AuthService {
     return principal;
   };
 
+  private post<T>(path: string, payload: any): Promise<T> {
+    return this.httpClient.post<T>(`${this.httpConfig.baseUrl}${path}`, payload).toPromise()
+  }
+
+  private completeLogin = (isRefresh: boolean) => (tokens: LoginResult): Promise<Principal> =>
+    this.validateTokenAsync(tokens.idToken).then(profile => ({ profile,  tokens}))
+    .then(({ profile,  tokens }) => {
+      this.updateStorage(isRefresh, profile['exp'], tokens);
+      return this.updatePrincipal(profile);
+    });
+
   login = info =>
-      this.httpClient.post<LoginResult>(`${this.httpConfig.baseUrl}login`, {email: 'max-3@gmail.com', password: 'Password-org-3'})
-      .toPromise()
-      .then(tokens => this.validateTokenAsync(tokens.idToken).then(profile => ({ profile,  tokens})))
-      .then(({ profile,  tokens }) => {
-        console.log('+++', profile, tokens);
-        this.updateStorage(profile['exp'], tokens);
-        return this.updatePrincipal(profile);
-      });
+      this.post<LoginResult>('login', {email: 'max-3@gmail.com', password: 'Password-org-3'})
+      .then(this.completeLogin(false));
 
   logout = (): void => {
     // Remove tokens and expiry time from localStorage
@@ -106,29 +111,26 @@ export class Auth0ROPGService extends AuthService {
     // ???
   };
 
-  private updateStorage = (expiresIn: number, res: LoginResult): void => {
+  private updateStorage = (isRefresh: boolean, expiresIn: number, res: LoginResult): void => {
     const expiresAt = JSON.stringify(
       expiresIn * 1000 + new Date().getTime()
     );
 
-    localStorage.setItem('refresh_token', res.refreshToken);
-    localStorage.setItem('access_token', res.accessToken);
+    if (!isRefresh) {
+      localStorage.setItem('refresh_token', res.refreshToken);
+    }
     localStorage.setItem('id_token', res.idToken);
+    localStorage.setItem('access_token', res.accessToken);
     localStorage.setItem('expires_at', expiresAt);
   };
 
-  //
-
-
   private tryLoginFromLocalAsync = (): Promise<A0.AdfsUserProfile | null> => {
-    console.log('zzz', this.isExpired);
     if (!this.isExpired) {
       return this.validateTokenAsync(localStorage.getItem('id_token'));
     } else {
       return Promise.resolve(null);
     }
   };
-
 
   private validateTokenAsync = (token): Promise<A0.AdfsUserProfile | null> => {
       return new Promise((resolve, reject) => {
@@ -150,13 +152,16 @@ export class Auth0ROPGService extends AuthService {
   public handleAuthentication = () =>
     this.tryLoginFromLocalAsync()
       .then(profile => {
-          console.log('111', profile);
           //loginned from stored session
-          return { principal: profile2Principal(profile), fromCallback: false };
+          return { principal: profile2Principal(profile), fromStored: true };
       })
+      .catch(() =>
+        // try to login using refresh_token
+        this.refreshTokenAsync().then(this.completeLogin(true))
+      )
       .then(res => {
         // user logined, schedule renewal
-        //this.scheduleRenewal();
+        this.scheduleRenewal();
         return res;
       })
       .catch(() => Promise.resolve(null));
@@ -164,18 +169,16 @@ export class Auth0ROPGService extends AuthService {
 
   // token renewal
 
-  /*
-  private renewTokenAsync = (): Promise<A0.Auth0DecodedHash> => {
+
+  private refreshTokenAsync = (): Promise<LoginResult> => {
     console.log('renewal started');
-    if (localStorage.getItem('refresh_token')) {
-      this.httpService.post('refersh-token', {token: localStorage.getItem('refresh_token')}).toPromise().then(
-        res =>
-      )
+    const token = localStorage.getItem('refresh_token');
+    if (token) {
+      return this.post('refresh-token', {token});
     } else {
       return Promise.reject('refresh_token not found')
     }
   }
-
 
   private scheduleRenewal() {
 
@@ -183,7 +186,7 @@ export class Auth0ROPGService extends AuthService {
 
     this.unscheduleRenewal();
 
-    const expiresAt = JSON.parse(window.localStorage.getItem('expires_at'));
+    const expiresAt = +localStorage.getItem('expires_at');
 
     const expiresIn$ = of(expiresAt).pipe(
       mergeMap(
@@ -200,9 +203,13 @@ export class Auth0ROPGService extends AuthService {
     // reached, get a new JWT and schedule
     // additional refreshes
     this.refreshSub = expiresIn$.pipe(
-        flatMap(this.renewTokenAsync)
-      ).subscribe(result => {
-        this.updateStorage(result);
+        flatMap(() =>
+          this.refreshTokenAsync().then(tokens =>
+            this.validateTokenAsync(tokens.idToken).then(profile => ({ profile,  tokens}))
+          )
+        )
+      ).subscribe(({profile, tokens}) => {
+        this.updateStorage(true, profile['exp'], tokens);
         this.scheduleRenewal();
       }
     );
@@ -213,6 +220,6 @@ export class Auth0ROPGService extends AuthService {
       this.refreshSub.unsubscribe();
     }
   }
-  */
+
 
 }
