@@ -22,6 +22,14 @@ export class AuthEffects {
   );
 
   @Effect()
+  loginFromTokens$ = this.actions$.pipe(
+    filterMap$(A.isLoginFromTokensAction)(getPayload),
+    flatMap(pipe(this.authService.loginFromTokens, ofPromiseR$)),
+    // serve only for errors
+    map(A.loginResultAction)
+  );
+
+  @Effect()
   logout$ = this.actions$.pipe(
     filter(A.isLogoutAction),
     tap(this.authService.logout),

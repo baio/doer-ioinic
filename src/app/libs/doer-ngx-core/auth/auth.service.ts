@@ -17,7 +17,7 @@ export interface Auth0Config {
 
 interface HandleAuthorizationResult {
     principal: Principal;
-    fromCallback: boolean;
+    fromStore: boolean;
 }
 
 @Injectable()
@@ -25,6 +25,7 @@ export abstract class  AuthService {
     token: Promise<string | null>;
     principal: Observable<Principal | null>;
     abstract login = (info: {email: string, password: string}): Promise<Principal> => null;
+    abstract loginFromTokens = (tokens: Tokens): Promise<Principal> => null;
     abstract logout = (): void => null;
     abstract handleAuthentication = (): Promise<HandleAuthorizationResult | null> => null;
 }

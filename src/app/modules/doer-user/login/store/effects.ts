@@ -52,6 +52,7 @@ export class FormEffects extends CommonFormEffects {
       map(loginAction)
     )
 
+  // TODO : split
   @Effect()
   loginSuccess =
     this.actions$.pipe(

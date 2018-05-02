@@ -1,12 +1,19 @@
 import { Action } from '@ngrx/store';
 import { IAction, action, isAction, IResultAction, resultAction, isResultAction } from '../../../doer-core';
-import { Principal } from '../../auth/auth.types';
+import { Principal, Tokens } from '../../auth/auth.types';
 
 export type LoginType = '[ngx-core] login';
 export const loginConst = '[ngx-core] login';
 export type LoginAction = IResultAction<LoginType, Principal>;
 export const loginAction = resultAction<LoginType, Principal>(loginConst);
 export const isLoginAction = isResultAction<LoginType, Principal>(loginConst);
+
+export type LoginFromTokensType = '[ngx-core] login from tokens';
+export const loginFromTokensConst = '[ngx-core] login from tokens';
+export type LoginFromTokensAction = IResultAction<LoginFromTokensType, Tokens>;
+export const loginFromTokensAction = resultAction<LoginFromTokensType, Tokens>(loginFromTokensConst);
+export const isLoginFromTokensAction = isResultAction<LoginFromTokensType, Tokens>(loginFromTokensConst);
+
 
 export type LoginResultType = '[ngx-core] login result';
 export const loginResultConst = '[ngx-core] login result';
@@ -26,4 +33,4 @@ export type LogoutResultAction = IResultAction<LogoutResultType, void>;
 export const logoutResultAction = resultAction<LogoutResultType, void>(logoutResultConst);
 export const isLogoutResultAction = isResultAction<LogoutResultType, void>(logoutResultConst);
 
-export type Actions = LoginAction | LoginResultAction | LogoutAction | LogoutResultAction;
+export type Actions = LoginAction | LoginResultAction | LogoutAction | LogoutResultAction | LoginFromTokensAction;

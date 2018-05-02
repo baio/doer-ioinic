@@ -138,10 +138,15 @@ export class Auth0ROPGService extends AuthService {
       });
 
   login = info =>
-    this.post<LoginResult>('login', {
-      email: 'max-3@gmail.com',
-      password: 'Password-org-3'
-    }).then(this.completeLogin(false) as any) as any;
+    this.post<LoginResult>('login', info).then(this.completeLogin(false) as any) as any;
+
+  loginFromTokens = (tokens: Tokens): Promise<Principal> => {
+    return this.completeLogin(false)(tokens).catch(x => {
+      console.log('---', x);
+      return Promise.reject(x)
+    });
+  }
+
 
   logout = (): void => {
     this.removeItem('id_token');

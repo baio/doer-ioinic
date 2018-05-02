@@ -86,6 +86,10 @@ export class Auth0ImplicitService extends AuthService {
     ) as any;
   };
 
+  loginFromTokens = (tokens: Tokens): Promise<Principal> => {
+    return Promise.reject('not implemented');
+  }
+
   updatePrincipal = (tokens: A0.Auth0DecodedHash): Principal => {
     const principal = profile2Principal(tokens.idTokenPayload);
     this.updateStorage(tokens);
