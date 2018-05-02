@@ -12,11 +12,19 @@ import { distinctUntilChanged, mergeMap, flatMap } from 'rxjs/operators';
 import { err, Result, isOK } from '../../doer-core';
 import { of } from 'rxjs/Observable/of';
 import { timer } from 'rxjs/observable/timer';
-import { Principal, AuthService, AUTH_SERVICE_CONFIG, Tokens, HttpService, HTTP_CONFIG, HttpConfig, Auth0Config } from '../../doer-ngx-core';
+import {
+  Principal,
+  AuthService,
+  AUTH_SERVICE_CONFIG,
+  Tokens,
+  HttpService,
+  HTTP_CONFIG,
+  HttpConfig,
+  Auth0Config
+} from '../../doer-ngx-core';
 import { validateToken } from '../../doer-ngx-core/auth/auth0';
 import { Storage } from '@ionic/storage';
 import { fromPromise } from 'rxjs/observable/fromPromise';
-
 
 // https://auth0.com/docs/quickstart/spa/angular2/01-login
 // https://auth0.github.io/auth0.js/global.html#login
@@ -44,11 +52,12 @@ const profile2Principal = (profile: A0.AdfsUserProfile): Principal => ({
  */
 @Injectable()
 export class Auth0ROPGService extends AuthService {
-
   private readonly auth0: A0.WebAuth;
   refreshSub: any;
   private readonly principal$ = new BehaviorSubject<Principal | null>(null);
-  private readonly validateToken: (token: string) => Promise<A0.AdfsUserProfile>;
+  private readonly validateToken: (
+    token: string
+  ) => Promise<A0.AdfsUserProfile>;
 
   constructor(
     @Inject(HTTP_CONFIG) private readonly httpConfig: HttpConfig,
@@ -63,7 +72,7 @@ export class Auth0ROPGService extends AuthService {
       responseType: 'token id_token',
       audience: config.audience,
       redirectUri: config.redirectUri,
-      scope: 'openid profile',
+      scope: 'openid profile'
     });
 
     this.validateToken = validateToken(config);
@@ -86,9 +95,7 @@ export class Auth0ROPGService extends AuthService {
   }
 
   get expiresAt(): Promise<number | null> {
-    return this.getItem('expires_at').then(x =>
-      x ? +x : null
-    )
+    return this.getItem('expires_at').then(x => (x ? +x : null));
   }
 
   /**
@@ -97,7 +104,7 @@ export class Auth0ROPGService extends AuthService {
   get isExpired(): Promise<boolean | null> {
     return this.expiresAt.then(expiresAt => {
       return new Date().getTime() > expiresAt;
-    })
+    });
   }
 
   get principal(): Observable<Principal | null> {
@@ -105,7 +112,7 @@ export class Auth0ROPGService extends AuthService {
   }
 
   get token(): Promise<string | null> {
-    return this.isExpired.then(x => x ? null : this.getItem('access_token'));
+    return this.isExpired.then(x => (x ? null : this.getItem('access_token')));
   }
 
   private updatePrincipal = (tokens: A0.AdfsUserProfile): Principal => {
@@ -115,37 +122,44 @@ export class Auth0ROPGService extends AuthService {
   };
 
   private post<T>(path: string, payload: any): Promise<T> {
-    return this.httpClient.post<T>(`${this.httpConfig.baseUrl}${path}`, payload).toPromise();
+    return this.httpClient
+      .post<T>(`${this.httpConfig.baseUrl}${path}`, payload)
+      .toPromise();
   }
 
-  private completeLogin = (isRefresh: boolean) => (tokens: LoginResult): Promise<Principal> =>
+  private completeLogin = (isRefresh: boolean) => (
+    tokens: LoginResult
+  ): Promise<Principal> =>
     this.validateToken(tokens.idToken)
-    .then(profile => ({ profile,  tokens}))
-    .then(({ profile,  tokens }) => {
-      this.updateStorage(isRefresh, profile['exp'], tokens);
-      return this.updatePrincipal(profile);
-    });
+      .then(profile => ({ profile, tokens }))
+      .then(({ profile, tokens }) => {
+        this.updateStorage(isRefresh, profile['exp'], tokens);
+        return this.updatePrincipal(profile);
+      });
 
   login = info =>
-      this.post<LoginResult>('login', {email: 'max-3@gmail.com', password: 'Password-org-3'})
-      .then(this.completeLogin(false) as any) as any
+    this.post<LoginResult>('login', {
+      email: 'max-3@gmail.com',
+      password: 'Password-org-3'
+    }).then(this.completeLogin(false) as any) as any;
 
   logout = (): void => {
-
     this.removeItem('id_token');
     this.removeItem('access_token');
     this.removeItem('refresh_token');
     this.removeItem('expires_at');
 
-    this.unscheduleRenewal()
+    this.unscheduleRenewal();
     this.principal$.next(null);
     // ???
   };
 
-  private updateStorage = (isRefresh: boolean, expiresIn: number, res: LoginResult): void => {
-    const expiresAt = JSON.stringify(
-      expiresIn * 1000 + new Date().getTime()
-    );
+  private updateStorage = (
+    isRefresh: boolean,
+    expiresIn: number,
+    res: LoginResult
+  ): void => {
+    const expiresAt = JSON.stringify(expiresIn * 1000 + new Date().getTime());
 
     if (!isRefresh) {
       this.setItem('refresh_token', res.refreshToken);
@@ -156,74 +170,79 @@ export class Auth0ROPGService extends AuthService {
   };
 
   private tryLoginFromLocalAsync = (): Promise<A0.AdfsUserProfile | null> => {
-    if (!this.isExpired) {
-      return this.getItem('id_token').then(this.validateToken);
-    } else {
-      return Promise.reject('IdToken not exists or expired');
-    }
+    return this.isExpired.then(
+      isExpired =>
+        !isExpired
+          ? this.getItem('id_token').then(this.validateToken)
+          : Promise.reject('IdToken not exists or expired')
+    );
   };
-
 
   public handleAuthentication = () =>
     this.tryLoginFromLocalAsync()
       .then(profile => {
-          //loginned from stored session
-          return { principal: profile2Principal(profile), fromStored: true };
+        //loginned from stored session
+        return { principal: profile2Principal(profile), fromStored: true };
       })
       .catch(() =>
         // try to login using refresh_token
-        this.refreshTokenAsync().then(this.completeLogin(true)).then(principal => ({principal, fromStored: false}))
+        this.refreshTokenAsync()
+          .then(this.completeLogin(true))
+          .then(principal => ({ principal, fromStored: false }))
       )
       .then(res => {
         // user logined, schedule renewal
         this.scheduleRenewal();
         return res;
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err);
         return Promise.resolve(null);
       });
 
-
   // token renewal
 
-
   private refreshTokenAsync = (): Promise<LoginResult> => {
-    return this.getItem('refresh_token')
-      .then(token => token ? this.post<LoginResult>('refresh-token', {token}) : Promise.reject('refresh_token not found'));
-  }
+    return this.getItem('refresh_token').then(
+      token =>
+        token
+          ? this.post<LoginResult>('refresh-token', { token })
+          : Promise.reject('refresh_token not found')
+    );
+  };
 
   private scheduleRenewal() {
-
     console.log('schedule renewal');
 
     this.unscheduleRenewal();
 
     const expiresIn$ = fromPromise(this.expiresAt).pipe(
-      mergeMap(
-        expiresAt => {
-          const now = Date.now();
-          // Use timer to track delay until expiration
-          // to run the refresh at the proper time
-          return timer(Math.max(1, expiresAt - now));
-        }
-      )
+      mergeMap(expiresAt => {
+        const now = Date.now();
+        // Use timer to track delay until expiration
+        // to run the refresh at the proper time
+        return timer(Math.max(1, expiresAt - now));
+      })
     );
 
     // Once the delay time from above is
     // reached, get a new JWT and schedule
     // additional refreshes
-    this.refreshSub = expiresIn$.pipe(
+    this.refreshSub = expiresIn$
+      .pipe(
         flatMap(() =>
           this.refreshTokenAsync().then(tokens =>
-            this.validateToken(tokens.idToken).then(profile => ({ profile,  tokens}))
+            this.validateToken(tokens.idToken).then(profile => ({
+              profile,
+              tokens
+            }))
           )
         )
-      ).subscribe(({profile, tokens}) => {
+      )
+      .subscribe(({ profile, tokens }) => {
         this.updateStorage(true, profile['exp'], tokens);
         this.scheduleRenewal();
-      }
-    );
+      });
   }
 
   private unscheduleRenewal() {
@@ -231,6 +250,4 @@ export class Auth0ROPGService extends AuthService {
       this.refreshSub.unsubscribe();
     }
   }
-
-
 }
