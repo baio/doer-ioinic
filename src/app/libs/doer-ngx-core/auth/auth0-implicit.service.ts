@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { AuthService, AUTH_SERVICE_CONFIG } from './auth.service';
+import { AuthService, AUTH_SERVICE_CONFIG, Auth0Config } from './auth.service';
 import { Principal, Tokens } from './auth.types';
 import * as A0 from 'auth0-js';
 import * as jwt from 'jsonwebtoken';
@@ -10,13 +10,7 @@ import { distinctUntilChanged, mergeMap, flatMap } from 'rxjs/operators';
 import { err, Result } from '../../doer-core';
 import { of } from 'rxjs/Observable/of';
 import { timer } from 'rxjs/observable/timer';
-
-export interface Auth0Config {
-  clientID: string;
-  domain: string;
-  audience: string;
-  redirectUri: string;
-}
+import { JwksCache, validateToken } from './auth0';
 
 // https://auth0.com/docs/quickstart/spa/angular2/01-login
 // https://auth0.github.io/auth0.js/global.html#login
@@ -30,12 +24,13 @@ const profile2Principal = (profile: A0.AdfsUserProfile): Principal => ({
 
 @Injectable()
 export class Auth0ImplicitService extends AuthService {
-
   private refreshSub: any;
   private readonly auth0: A0.WebAuth;
   private readonly principal$ = new BehaviorSubject<Principal | null>(null);
 
-  constructor(@Inject(AUTH_SERVICE_CONFIG) private readonly config: Auth0Config) {
+  constructor(
+    @Inject(AUTH_SERVICE_CONFIG) private readonly config: Auth0Config
+  ) {
     super();
     this.auth0 = new A0.WebAuth({
       clientID: config.clientID,
@@ -43,7 +38,7 @@ export class Auth0ImplicitService extends AuthService {
       responseType: 'token id_token',
       audience: config.audience,
       redirectUri: config.redirectUri,
-      scope: 'openid profile',
+      scope: 'openid profile'
     });
   }
 
@@ -102,7 +97,7 @@ export class Auth0ImplicitService extends AuthService {
     localStorage.removeItem('nonce');
     this.unscheduleRenewal();
     this.principal$.next(null);
-    this.auth0.logout({ returnTo: this.config.redirectUri});
+    this.auth0.logout({ returnTo: this.config.redirectUri });
   };
 
   private updateStorage = (hash: A0.Auth0DecodedHash): void => {
@@ -131,38 +126,35 @@ export class Auth0ImplicitService extends AuthService {
     );
 
   private tryLoginFromLocal = (): Promise<Principal | null> => {
-    console.log('tryLoginFromLocal', this.isExpired, localStorage.getItem('nonce'));
+    console.log(
+      'tryLoginFromLocal',
+      this.isExpired,
+      localStorage.getItem('nonce')
+    );
     if (!this.isExpired && localStorage.getItem('nonce')) {
-      return new Promise(resolve => {
-        this.auth0.validateToken(
-          localStorage.getItem('id_token'),
-          localStorage.getItem('nonce'),
-          (err, res) => {
-            if (err) {
-              resolve(null);
-            } else {
-              resolve(profile2Principal(res));
-            }
-          }
-        );
-      });
+      return validateToken(this.config)(
+        localStorage.getItem('id_token'),
+        localStorage.getItem('nonce')
+      ).then(profile2Principal);
     } else {
-      return Promise.resolve(null);
+      return Promise.reject(
+        this.isExpired ? 'Token expired' : 'Nonce not defined'
+      );
     }
   };
 
   public handleAuthentication = () =>
     this.tryLoginFromLocal()
-      .then(res =>{
-          if (res) {
-            //loginned from stored session
-            return { principal: res, fromCallback: false };
-          } else {
-            // try to pase hash with auth if esixsts
-            return this.parseHashAsync()
-                .then(this.updatePrincipal)
-                .then(res => ({ principal: res, fromCallback: true }));
-          }
+      .then(res => {
+        if (res) {
+          //loginned from stored session
+          return { principal: res, fromCallback: false };
+        } else {
+          // try to pase hash with auth if esixsts
+          return this.parseHashAsync()
+            .then(this.updatePrincipal)
+            .then(res => ({ principal: res, fromCallback: true }));
+        }
       })
       .then(res => {
         // user logined, schedule renewal
@@ -175,19 +167,20 @@ export class Auth0ImplicitService extends AuthService {
 
   private renewTokenAsync = (): Promise<A0.Auth0DecodedHash> => {
     console.log('renewal started');
-    return new Promise((resolve, reject) => this.auth0.checkSession({}, (err, result) => {
-      console.log('renewTokenAsync', !!result);
-      if (err) {
-        console.log(err);
-        reject(err);
-      } else {
-        resolve(result)
-      }
-    }));
-  }
+    return new Promise((resolve, reject) =>
+      this.auth0.checkSession({}, (err, result) => {
+        console.log('renewTokenAsync', !!result);
+        if (err) {
+          console.log(err);
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      })
+    );
+  };
 
   private scheduleRenewal() {
-
     console.log('schedule renewal');
 
     this.unscheduleRenewal();
@@ -195,26 +188,23 @@ export class Auth0ImplicitService extends AuthService {
     const expiresAt = JSON.parse(window.localStorage.getItem('expires_at'));
 
     const expiresIn$ = of(expiresAt).pipe(
-      mergeMap(
-        expiresAt => {
-          const now = Date.now();
-          // Use timer to track delay until expiration
-          // to run the refresh at the proper time
-          return timer(Math.max(1, expiresAt - now));
-        }
-      )
+      mergeMap(expiresAt => {
+        const now = Date.now();
+        // Use timer to track delay until expiration
+        // to run the refresh at the proper time
+        return timer(Math.max(1, expiresAt - now));
+      })
     );
 
     // Once the delay time from above is
     // reached, get a new JWT and schedule
     // additional refreshes
-    this.refreshSub = expiresIn$.pipe(
-        flatMap(this.renewTokenAsync)
-      ).subscribe(result => {
+    this.refreshSub = expiresIn$
+      .pipe(flatMap(this.renewTokenAsync))
+      .subscribe(result => {
         this.updateStorage(result);
         this.scheduleRenewal();
-      }
-    );
+      });
   }
 
   private unscheduleRenewal() {
@@ -222,5 +212,4 @@ export class Auth0ImplicitService extends AuthService {
       this.refreshSub.unsubscribe();
     }
   }
-
 }

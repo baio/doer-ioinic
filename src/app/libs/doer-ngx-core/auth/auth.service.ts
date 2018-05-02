@@ -7,6 +7,14 @@ import { Principal, Tokens } from './auth.types';
 
 export const AUTH_SERVICE_CONFIG = new InjectionToken('AUTH_SERVICE_CONFIG');
 
+export interface Auth0Config {
+    clientID: string;
+    domain: string;
+    audience: string;
+    redirectUri: string;
+    jwks?: any | null;
+}
+
 interface HandleAuthorizationResult {
     principal: Principal;
     fromCallback: boolean;

@@ -12,34 +12,10 @@ import { distinctUntilChanged, mergeMap, flatMap } from 'rxjs/operators';
 import { err, Result, isOK } from '../../doer-core';
 import { of } from 'rxjs/Observable/of';
 import { timer } from 'rxjs/observable/timer';
-import { Principal, AuthService, AUTH_SERVICE_CONFIG, Tokens, HttpService, HTTP_CONFIG, HttpConfig } from '../../doer-ngx-core';
-import  * as V from 'idtoken-verifier';
+import { Principal, AuthService, AUTH_SERVICE_CONFIG, Tokens, HttpService, HTTP_CONFIG, HttpConfig, Auth0Config } from '../../doer-ngx-core';
+import { validateToken } from '../../doer-ngx-core/auth/auth0';
 
-class Cashe1 {
-  get() {
-    console.log('xxxx');
-    return {
-      exp: '010001',
-      modulus: 'e28d34a0d37ce72681dcf056fbda092b48eadea6518554cb3c0f994018e37f9c586d514e024a04d5e93cd5e3778ef26032e81c5b339854abe1ee4b6787280e02133f9865f677bb26a4336d8bd0071ae1fe6aa1f5aeec7560e4891479b7b6903f1aea60f55487289c15ae6e2071a7f413c44f5f638664a51c4c984234811f73ea7a4d2b0ff4819c6ac62d2cb4258e14453bce182c010b4eca7706bc9be6337824bad17911411416777b3d012101d4d4293b7c80476774c9085a2d93a1601b788dbe65f7a2667f9b097d5e6fe580ee2c87368bb6ad442484b00246d295384c6b8ff95e10819eb69c930d4709aae93b1a7d3e4de032226b1bd30eb4c90507752f2f'
-    }
-  }
 
-  has() {
-    console.log('yyyy');
-    return true;
-  }
-
-  set(key, x) {
-    console.log('888', x);
-  }
-}
-
-export interface Auth0Config {
-  clientID: string;
-  domain: string;
-  audience: string;
-  redirectUri: string;
-}
 
 // https://auth0.com/docs/quickstart/spa/angular2/01-login
 // https://auth0.github.io/auth0.js/global.html#login
@@ -63,6 +39,7 @@ export class Auth0ROPGService extends AuthService {
   private readonly auth0: A0.WebAuth;
   refreshSub: any;
   private readonly principal$ = new BehaviorSubject<Principal | null>(null);
+  private readonly validateToken: (token: string) => Promise<A0.AdfsUserProfile>;
 
   constructor(
     @Inject(HTTP_CONFIG) private readonly httpConfig: HttpConfig,
@@ -78,6 +55,8 @@ export class Auth0ROPGService extends AuthService {
       redirectUri: config.redirectUri,
       scope: 'openid profile',
     });
+
+    this.validateToken = validateToken(config);
   }
 
   get isAuthenticated(): boolean {
@@ -107,13 +86,12 @@ export class Auth0ROPGService extends AuthService {
   };
 
   private post<T>(path: string, payload: any): Promise<T> {
-
-    console.log('!!!', `${this.httpConfig.baseUrl}${path}`);
     return this.httpClient.post<T>(`${this.httpConfig.baseUrl}${path}`, payload).toPromise();
   }
 
   private completeLogin = (isRefresh: boolean) => (tokens: LoginResult): Promise<Principal> =>
-    this.validateTokenAsync(tokens.idToken).then(profile => ({ profile,  tokens}))
+    this.validateToken(tokens.idToken)
+    .then(profile => ({ profile,  tokens}))
     .then(({ profile,  tokens }) => {
       this.updateStorage(isRefresh, profile['exp'], tokens);
       return this.updatePrincipal(profile);
@@ -121,22 +99,13 @@ export class Auth0ROPGService extends AuthService {
 
   login = info =>
       this.post<LoginResult>('login', {email: 'max-3@gmail.com', password: 'Password-org-3'})
-      //this.httpClient.post('https://httpbin.org/post', {test: 'ok'}).toPromise()
-      .catch(err => {
-        console.log(JSON.stringify(err, null, 2));
-        return Promise.reject(err);
-      })
-      .then(x => {
-        console.log('done !!!', x);
-        return x;
-      })
       .then(this.completeLogin(false) as any) as any
 
   logout = (): void => {
     // Remove tokens and expiry time from localStorage
     localStorage.removeItem('id_token');
     localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_at');
+    localStorage.removeItem('refresh_token');
     localStorage.removeItem('expires_at');
 
     this.unscheduleRenewal()
@@ -159,58 +128,12 @@ export class Auth0ROPGService extends AuthService {
 
   private tryLoginFromLocalAsync = (): Promise<A0.AdfsUserProfile | null> => {
     if (!this.isExpired) {
-      return this.validateTokenAsync(localStorage.getItem('id_token'));
+      return this.validateToken(localStorage.getItem('id_token'));
     } else {
-      return Promise.resolve(null);
+      return Promise.reject('IdToken not exists or expired');
     }
   };
 
-  private validateTokenAsync = (token): Promise<A0.AdfsUserProfile | null> => {
-
-    return this.validateToken(token) as any;
-    /*
-      return new Promise((resolve, reject) => {
-        this.auth0.validateToken(
-          token,
-          null,
-          (err, res) => {
-            if (err) {
-              console.log('validateTokenAsync:err');
-              console.log(JSON.stringify(err, null, 2));
-              reject(err);
-            } else {
-              resolve(res);
-            }
-          }
-        );
-      });
-      */
-
-  }
-
-  validateToken(token: string) {
-
-    var verifier = new V({
-      issuer: 'https://doer-stage.eu.auth0.com/',//.token_issuer,
-      jwksURI: 'https://doer-stage.eu.auth0.com/.well-known/jwks.json',//'',//this.baseOptions.jwksURI,
-      audience: this.config.clientID,//this.baseOptions.clientID,
-      jwksCache: new Cashe1(),
-      leeway: 0// this.baseOptions.leeway || 0,
-    });
-
-
-    return new Promise((resolve, reject) => {
-        console.log('111', verifier);
-        verifier.verify(token, null, function(err, payload) {
-          console.log('222', err, payload);
-          if (err) {
-            return reject(err);
-          } else {
-            return resolve(payload);
-          }
-        });
-    });
-  }
 
   public handleAuthentication = () =>
     this.tryLoginFromLocalAsync()
@@ -227,7 +150,10 @@ export class Auth0ROPGService extends AuthService {
         this.scheduleRenewal();
         return res;
       })
-      .catch(() => Promise.resolve(null));
+      .catch((err) => {
+        console.log(err);
+        return Promise.resolve(null);
+      });
 
 
   // token renewal
@@ -267,7 +193,7 @@ export class Auth0ROPGService extends AuthService {
     this.refreshSub = expiresIn$.pipe(
         flatMap(() =>
           this.refreshTokenAsync().then(tokens =>
-            this.validateTokenAsync(tokens.idToken).then(profile => ({ profile,  tokens}))
+            this.validateToken(tokens.idToken).then(profile => ({ profile,  tokens}))
           )
         )
       ).subscribe(({profile, tokens}) => {
