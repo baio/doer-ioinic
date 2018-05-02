@@ -23,6 +23,8 @@ export const validateToken = (config: {domain: string, clientID: string, jwks?: 
     const issuer = `https://${config.domain}/`;
     const jwksURI = `${issuer}.well-known/jwks.json`;
 
+    console.log('---', nonce);
+
     var verifier = new Verifier({
       issuer,
       jwksURI,

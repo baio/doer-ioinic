@@ -145,17 +145,12 @@ export class Auth0ImplicitService extends AuthService {
 
   public handleAuthentication = () =>
     this.tryLoginFromLocal()
-      .then(res => {
-        if (res) {
-          //loginned from stored session
-          return { principal: res, fromCallback: false };
-        } else {
-          // try to pase hash with auth if esixsts
-          return this.parseHashAsync()
-            .then(this.updatePrincipal)
-            .then(res => ({ principal: res, fromCallback: true }));
-        }
-      })
+      .then(res => ({ principal: res, fromCallback: false }))
+      .catch(() =>
+        this.parseHashAsync()
+        .then(this.updatePrincipal)
+        .then(res => ({ principal: res, fromCallback: true }))
+      )
       .then(res => {
         // user logined, schedule renewal
         this.scheduleRenewal();

@@ -77,7 +77,7 @@ const auth0Config = {
     SplashScreen,
     {provide: AUTH_SERVICE_CONFIG, useValue: auth0Config },
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    {provide: AuthService, useClass: Auth0ROPGService}
+    {provide: AuthService, useClass: Auth0ImplicitService}
   ]
 })
 export class AppModule {}
