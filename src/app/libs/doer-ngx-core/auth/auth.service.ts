@@ -22,7 +22,7 @@ interface HandleAuthorizationResult {
 
 @Injectable()
 export abstract class  AuthService {
-    token: string | null;
+    token: Promise<string | null>;
     principal: Observable<Principal | null>;
     abstract login = (info: {email: string, password: string}): Promise<Principal> => null;
     abstract logout = (): void => null;

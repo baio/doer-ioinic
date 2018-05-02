@@ -14,7 +14,8 @@ import { of } from 'rxjs/Observable/of';
 import { timer } from 'rxjs/observable/timer';
 import { Principal, AuthService, AUTH_SERVICE_CONFIG, Tokens, HttpService, HTTP_CONFIG, HttpConfig, Auth0Config } from '../../doer-ngx-core';
 import { validateToken } from '../../doer-ngx-core/auth/auth0';
-
+import { Storage } from '@ionic/storage';
+import { fromPromise } from 'rxjs/observable/fromPromise';
 
 
 // https://auth0.com/docs/quickstart/spa/angular2/01-login
@@ -33,6 +34,14 @@ const profile2Principal = (profile: A0.AdfsUserProfile): Principal => ({
   avatar: profile.picture
 });
 
+/**
+ * Integrates auth0 (resource onwer password grant flow)[https://auth0.com/docs/api-auth/tutorials/password-grant]
+ * Could be work both in SPA and ionic, but the flow suppose to store refresh_token safely, which could not be done in web
+ * apps. Use it for Ionic app.
+ * Auth enpoint must provide following api:
+ * [POST] login (payload : {email: string, password: string})
+ * [POST] refresh-token (payload : {token: string})
+ */
 @Injectable()
 export class Auth0ROPGService extends AuthService {
 
@@ -44,7 +53,8 @@ export class Auth0ROPGService extends AuthService {
   constructor(
     @Inject(HTTP_CONFIG) private readonly httpConfig: HttpConfig,
     @Inject(AUTH_SERVICE_CONFIG) private readonly config: Auth0Config,
-    private readonly httpClient: HttpClient
+    private readonly httpClient: HttpClient,
+    private readonly storage: Storage
   ) {
     super();
     this.auth0 = new A0.WebAuth({
@@ -59,24 +69,43 @@ export class Auth0ROPGService extends AuthService {
     this.validateToken = validateToken(config);
   }
 
-  get isAuthenticated(): boolean {
-    return !!localStorage.getItem('id_token');
+  private getItem(key: string): Promise<string> {
+    return this.storage.get(key);
+  }
+
+  private setItem(key: string, val: string) {
+    this.storage.set(key, val);
+  }
+
+  private removeItem(key: string) {
+    this.storage.remove(key);
+  }
+
+  get isAuthenticated(): Promise<boolean> {
+    return this.getItem('id_token').then(x => !!x);
+  }
+
+  get expiresAt(): Promise<number | null> {
+    return this.getItem('expires_at').then(x =>
+      x ? +x : null
+    )
   }
 
   /**
    * if user not logined returns null
    */
-  get isExpired(): boolean | null {
-    const expiresAt = +localStorage.getItem('expires_at');
-    return new Date().getTime() > expiresAt;
+  get isExpired(): Promise<boolean | null> {
+    return this.expiresAt.then(expiresAt => {
+      return new Date().getTime() > expiresAt;
+    })
   }
 
   get principal(): Observable<Principal | null> {
     return this.principal$.pipe(distinctUntilChanged(equals)) as any;
   }
 
-  get token(): string | null {
-    return this.isExpired ? null : localStorage.getItem('access_token');
+  get token(): Promise<string | null> {
+    return this.isExpired.then(x => x ? null : this.getItem('access_token'));
   }
 
   private updatePrincipal = (tokens: A0.AdfsUserProfile): Principal => {
@@ -102,11 +131,11 @@ export class Auth0ROPGService extends AuthService {
       .then(this.completeLogin(false) as any) as any
 
   logout = (): void => {
-    // Remove tokens and expiry time from localStorage
-    localStorage.removeItem('id_token');
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('expires_at');
+
+    this.removeItem('id_token');
+    this.removeItem('access_token');
+    this.removeItem('refresh_token');
+    this.removeItem('expires_at');
 
     this.unscheduleRenewal()
     this.principal$.next(null);
@@ -119,16 +148,16 @@ export class Auth0ROPGService extends AuthService {
     );
 
     if (!isRefresh) {
-      localStorage.setItem('refresh_token', res.refreshToken);
+      this.setItem('refresh_token', res.refreshToken);
     }
-    localStorage.setItem('id_token', res.idToken);
-    localStorage.setItem('access_token', res.accessToken);
-    localStorage.setItem('expires_at', expiresAt);
+    this.setItem('id_token', res.idToken);
+    this.setItem('access_token', res.accessToken);
+    this.setItem('expires_at', expiresAt);
   };
 
   private tryLoginFromLocalAsync = (): Promise<A0.AdfsUserProfile | null> => {
     if (!this.isExpired) {
-      return this.validateToken(localStorage.getItem('id_token'));
+      return this.getItem('id_token').then(this.validateToken);
     } else {
       return Promise.reject('IdToken not exists or expired');
     }
@@ -143,7 +172,7 @@ export class Auth0ROPGService extends AuthService {
       })
       .catch(() =>
         // try to login using refresh_token
-        this.refreshTokenAsync().then(this.completeLogin(true))
+        this.refreshTokenAsync().then(this.completeLogin(true)).then(principal => ({principal, fromStored: false}))
       )
       .then(res => {
         // user logined, schedule renewal
@@ -160,12 +189,8 @@ export class Auth0ROPGService extends AuthService {
 
 
   private refreshTokenAsync = (): Promise<LoginResult> => {
-    const token = localStorage.getItem('refresh_token');
-    if (token) {
-      return this.post('refresh-token', {token});
-    } else {
-      return Promise.reject('refresh_token not found')
-    }
+    return this.getItem('refresh_token')
+      .then(token => token ? this.post<LoginResult>('refresh-token', {token}) : Promise.reject('refresh_token not found'));
   }
 
   private scheduleRenewal() {
@@ -174,9 +199,7 @@ export class Auth0ROPGService extends AuthService {
 
     this.unscheduleRenewal();
 
-    const expiresAt = +localStorage.getItem('expires_at');
-
-    const expiresIn$ = of(expiresAt).pipe(
+    const expiresIn$ = fromPromise(this.expiresAt).pipe(
       mergeMap(
         expiresAt => {
           const now = Date.now();

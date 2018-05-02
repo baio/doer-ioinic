@@ -3,10 +3,11 @@ import { Observable } from 'rxjs/Observable';
 import { pipe, prop, compose, propOr, toPairs, when, isNil, always, forEach, apply } from 'ramda';
 import { Http, Headers, Response } from '@angular/http';
 import { AuthService } from '../auth/auth.service';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap, flatMap } from 'rxjs/operators';
 import { HttpConfig, HttpError } from './http.types';
 import { of } from 'rxjs/Observable/of';
-import { err, ok, ObservableResult } from '../../doer-core';
+import { err, ok, ObservableResult, Result } from '../../doer-core';
+import { fromPromise } from 'rxjs/observable/fromPromise';
 
 const parseServerSuccess = (response: Response) => parseServerResponseJson(response);
 
@@ -86,9 +87,12 @@ export class HttpService {
 
     // append headers
     const headers = new Headers();
+
+    /*
     if (this.authService && this.authService.token) {
       headers.append('Authorization', this.authService.token);
     }
+    */
 
     pipe(
         when(isNil, always({})),
@@ -113,10 +117,20 @@ export class HttpService {
         body = request.body;
     }
 
-    return this.http.request(wholeUrl, { headers, search, body, method: request.method })
+    const requsetWithHeaders = h => this.http.request(wholeUrl, { headers: h, search, body, method: request.method })
         .pipe(map(mapSuccess))
         .pipe(
             catchError(pipe(mapError, of)) as any
+        ) as Observable<Result<T>>;
+
+    return fromPromise(this.authService ? this.authService.token : Promise.resolve(null)).pipe(
+            map(token => {
+                if (token) {
+                    headers.append('Authorization', token);
+                }
+                return headers;
+            }),
+            flatMap(requsetWithHeaders)
         )
   }
 

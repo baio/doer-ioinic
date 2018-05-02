@@ -22,6 +22,10 @@ const profile2Principal = (profile: A0.AdfsUserProfile): Principal => ({
   avatar: profile.picture
 });
 
+/**
+ * Integrates auth0 (imlicit flow)[https://auth0.com/docs/api-auth/tutorials/implicit-grant]
+ * Could be used only in SPA apps (not ionic)
+ */
 @Injectable()
 export class Auth0ImplicitService extends AuthService {
   private refreshSub: any;
@@ -61,8 +65,8 @@ export class Auth0ImplicitService extends AuthService {
     return this.principal$.pipe(distinctUntilChanged(equals)) as any;
   }
 
-  get token(): string | null {
-    return this.isExpired ? null : localStorage.getItem('access_token');
+  get token(): Promise<string | null> {
+    return Promise.resolve(this.isExpired ? null : localStorage.getItem('access_token'));
   }
 
   login = info => {
@@ -145,11 +149,11 @@ export class Auth0ImplicitService extends AuthService {
 
   public handleAuthentication = () =>
     this.tryLoginFromLocal()
-      .then(res => ({ principal: res, fromCallback: false }))
+      .then(res => ({ principal: res, fromStored: true }))
       .catch(() =>
         this.parseHashAsync()
         .then(this.updatePrincipal)
-        .then(res => ({ principal: res, fromCallback: true }))
+        .then(res => ({ principal: res, fromStored: false }))
       )
       .then(res => {
         // user logined, schedule renewal

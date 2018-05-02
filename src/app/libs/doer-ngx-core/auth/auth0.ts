@@ -23,8 +23,6 @@ export const validateToken = (config: {domain: string, clientID: string, jwks?: 
     const issuer = `https://${config.domain}/`;
     const jwksURI = `${issuer}.well-known/jwks.json`;
 
-    console.log('---', nonce);
-
     var verifier = new Verifier({
       issuer,
       jwksURI,
@@ -34,9 +32,9 @@ export const validateToken = (config: {domain: string, clientID: string, jwks?: 
     });
 
     return new Promise((resolve, reject) => {
-        console.log('111', verifier, nonce);
+        //console.log('111', verifier, nonce);
         verifier.verify(token, nonce || null, (err, payload) => {
-          console.log('222', err, payload);
+          //console.log('222', err, payload);
           if (err) {
             return reject(err);
           } else {

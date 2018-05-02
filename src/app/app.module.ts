@@ -3,7 +3,7 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
-import { HTTP } from '@ionic-native/http';
+import { IonicStorageModule } from '@ionic/storage';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
@@ -61,6 +61,7 @@ const auth0Config = {
   ],
   imports: [
     BrowserModule,
+    IonicStorageModule.forRoot(),
     IonicModule.forRoot(MyApp),
     StoreModule.forRoot(NgrxConstants.REDUCERS),
     EffectsModule.forRoot([RouterEffects, AuthEffects]),
@@ -77,7 +78,7 @@ const auth0Config = {
     SplashScreen,
     {provide: AUTH_SERVICE_CONFIG, useValue: auth0Config },
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    {provide: AuthService, useClass: Auth0ImplicitService}
+    {provide: AuthService, useClass: Auth0ROPGService}
   ]
 })
 export class AppModule {}
