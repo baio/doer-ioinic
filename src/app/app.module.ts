@@ -3,6 +3,7 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
+import { HTTP } from '@ionic-native/http';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
@@ -29,15 +30,25 @@ const auth0Config = {
 };
 */
 
+
 const auth0Config = {
   // Needed for Auth0 (capitalization: ID):
+  clientID: 'QTVsqmat06hTQQeavpR2j7SUuBijI2Lm',
+  domain: 'doer-stage.eu.auth0.com',
+  redirectUri: 'http://doer-local:8100',
+  responseType: 'token id_token',
+  scope: 'openid profile'
+};
+
+/*
+const auth0Config = {
   clientID: '5Svk7WPecVbRE165tCEYNWITRbVsIXE4',
   domain: 'baio.auth0.com',
   redirectUri: 'http://doer-local:8100',
   responseType: 'token id_token',
   scope: 'openid profile'
 };
-
+*/
 
 @NgModule({
   declarations: [

@@ -23,6 +23,7 @@
     "@angular/platform-browser-dynamic": "5.2.9",
     "@angular/router": "^5.2.9",
     "@ionic-native/core": "4.5.3",
+    "@ionic-native/http": "^4.7.0",
     "@ionic-native/splash-screen": "4.5.3",
     "@ionic-native/status-bar": "4.5.3",
     "@ionic/pro": "1.0.20",
@@ -31,6 +32,8 @@
     "@ngrx/router-store": "^5.2.0",
     "@ngrx/store": "^5.2.0",
     "@ngrx/store-devtools": "^5.2.0",
+    "cordova-plugin-advanced-http": "^1.11.1",
+    "idtoken-verifier": "^1.2.0",
     "ionic-angular": "3.9.2",
     "ionicons": "3.0.0",
     "jsonwebtoken": "^8.2.0",
@@ -48,5 +51,10 @@
     "tslint-ionic-rules": "0.0.14",
     "typescript": "~2.6.2"
   },
-  "description": "An Ionic project"
+  "description": "An Ionic project",
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-advanced-http": {}
+    }
+  }
 }

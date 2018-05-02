@@ -53,7 +53,7 @@ import { HttpClientModule } from '@angular/common/http';
     AuthorizingPageComponent
   ],
   providers: [
-    { provide: HTTP_CONFIG, useValue: { baseUrl: 'http://localhost:7071/api/'/* 'https://doer-stage.azurewebsites.net/api/'*/ } },
+    { provide: HTTP_CONFIG, useValue: { baseUrl: /*'http://localhost:7071/api/'*/ 'https://doer-stage.azurewebsites.net/api/' } },
     HttpService,
     RegitserOrgFormService,
     LoginFormService
