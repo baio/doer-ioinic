@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpModule } from '@angular/http';
-import { PagesModule } from '../../libs/doer-ionic-core';
+import { PagesModule } from '@doer/ionic-core';
 import { IonicModule } from 'ionic-angular';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { HttpService, HTTP_CONFIG } from '../../libs/doer-ngx-core';
+import { HttpService, HTTP_CONFIG } from '@doer/ngx-core';
+import { CameraService } from '@doer/native';
 
 import {
   FormService as RegitserOrgFormService,
@@ -27,6 +28,8 @@ import { LoginPageModule } from './login/login-page/login-page.component.module'
 import { ProfilePageModule } from './profile-page/profile-page.component.module';
 import { AuthorizingPageComponent } from './authorizing-page/authorizing-page.component';
 import { HttpClientModule } from '@angular/common/http';
+import { Camera } from '@ionic-native/camera';
+import { File } from '@ionic-native/file';
 
 @NgModule({
   imports: [
@@ -56,7 +59,11 @@ import { HttpClientModule } from '@angular/common/http';
     { provide: HTTP_CONFIG, useValue: { baseUrl: /*'http://localhost:7071/api/'*/ 'https://doer-stage.azurewebsites.net/api/' } },
     HttpService,
     RegitserOrgFormService,
-    LoginFormService
+    LoginFormService,
+    // TODO: CameraModule
+    Camera,
+    CameraService,
+    File
   ],
   entryComponents: [
     AuthorizingPageComponent

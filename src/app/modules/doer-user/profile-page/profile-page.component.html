@@ -1,9 +1,10 @@
 <ion-list *ngIf="(principal$ | async) as user">
     <ion-item>
-        <ion-avatar item-start>
-            <img [src]="user.avatar">
-        </ion-avatar>
+        <ion-thumbnail item-start>
+            <img [src]="avatar$ | async">
+        </ion-thumbnail>
         <h2>{{user.name}}</h2>
         <button ion-button (click)="onLogout()">Logout</button>
+        <button ion-button class="secondary" (click)="onChangePhoto()">Change Photo</button>
     </ion-item>
 </ion-list>

@@ -9,6 +9,8 @@ const aliases = {
   "@doer/core": path.resolve('./src/app/libs/doer-core/'),
   "@doer/ionic-core": path.resolve('./src/app/libs/doer-ionic-core/'),
   "@doer/ngx-core": path.resolve('./src/app/libs/doer-ngx-core/'),
+  "@doer/native": path.resolve('./src/app/libs/doer-native/'),
+  "@doer/user": path.resolve('./src/app/modules/user/'),
   "@app": path.resolve('./src/app/'),
   "@assets": path.resolve('./src/assets/'),
   "@pages": path.resolve('./src/pages/'),

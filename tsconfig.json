@@ -16,7 +16,9 @@
     "paths": {
       "@doer/core": ["app/libs/doer-core/index"],
       "@doer/ionic-core": ["app/libs/doer-ionic-core/index"],
-      "@doer/ngx-core": ["app/libs/doer-ngx-core/index"]
+      "@doer/ngx-core": ["app/libs/doer-ngx-core/index"],
+      "@doer/native": ["app/libs/doer-native/index"],
+      "@doer/user": ["app/modules/user/index"]
     }
   },
   "include": [

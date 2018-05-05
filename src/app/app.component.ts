@@ -16,7 +16,13 @@ import { AuthorizingPageComponent } from './modules/doer-user/authorizing-page/a
 export class MyApp {
   rootPage:any =  AuthorizingPageComponent; // HomePage;
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, auth: AuthService, store: Store<any>) {
+  constructor(
+    platform: Platform,
+    statusBar: StatusBar,
+    splashScreen: SplashScreen,
+    auth: AuthService,
+    store: Store<any>
+  ) {
 
 
     platform.ready().then(() => {
