@@ -11,9 +11,8 @@ import { DoerUserModule } from './modules/doer-user';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { RouterEffects } from './libs/doer-ionic-core';
-import { NgrxConstants, AuthService, AUTH_SERVICE_CONFIG, Auth0ImplicitService, authReducer, AuthEffects } from './libs/doer-ngx-core';
-import { Auth0ROPGService } from './libs/doer-ionic-core/auth/auth0-ropg.service';
+import { NgrxConstants, AuthService, AUTH_SERVICE_CONFIG, Auth0ImplicitService, authReducer, AuthEffects } from '@doer/ngx-core';
+import { Auth0ROPGService, RouterEffects } from '@doer/ionic-core';
 
 
 /*

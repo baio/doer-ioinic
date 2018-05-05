@@ -11,7 +11,13 @@
     "module": "es2015",
     "moduleResolution": "node",
     "sourceMap": true,
-    "target": "es5"
+    "target": "es5",
+    "baseUrl": "./src",
+    "paths": {
+      "@doer/core": ["app/libs/doer-core/index"],
+      "@doer/ionic-core": ["app/libs/doer-ionic-core/index"],
+      "@doer/ngx-core": ["app/libs/doer-ngx-core/index"]
+    }
   },
   "include": [
     "src/**/*.ts"
