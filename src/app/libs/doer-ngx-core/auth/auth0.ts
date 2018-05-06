@@ -15,7 +15,9 @@ export class JwksCache {
       return !!this.data;
     }
 
-    set(key, x) {}
+    set(key, x) {
+      console.log(x);
+    }
 }
 
 export const validateToken = (config: {domain: string, clientID: string, jwks?: any|null}) => (token: string, nonce?: string): Promise<AdfsUserProfile> => {

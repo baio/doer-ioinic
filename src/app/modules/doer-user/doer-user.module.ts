@@ -6,7 +6,7 @@ import { IonicModule } from 'ionic-angular';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { HttpService, HTTP_CONFIG } from '@doer/ngx-core';
-import { CameraService } from '@doer/native';
+import { CameraService, UploadFileService } from '@doer/native';
 
 import {
   FormService as RegitserOrgFormService,
@@ -30,6 +30,8 @@ import { AuthorizingPageComponent } from './authorizing-page/authorizing-page.co
 import { HttpClientModule } from '@angular/common/http';
 import { Camera } from '@ionic-native/camera';
 import { File } from '@ionic-native/file';
+import { FilePath } from '@ionic-native/file-path';
+import { Transfer } from '@ionic-native/transfer';
 
 @NgModule({
   imports: [
@@ -56,14 +58,17 @@ import { File } from '@ionic-native/file';
     AuthorizingPageComponent
   ],
   providers: [
-    { provide: HTTP_CONFIG, useValue: { baseUrl: /*'http://localhost:7071/api/'*/ 'https://doer-stage.azurewebsites.net/api/' } },
+    { provide: HTTP_CONFIG, useValue: { baseUrl: /*'http://192.168.0.100:777/api/',*/ 'https://doer-stage.azurewebsites.net/api/' } },
     HttpService,
     RegitserOrgFormService,
     LoginFormService,
     // TODO: CameraModule
     Camera,
+    File,
+    FilePath,
+    Transfer,
     CameraService,
-    File
+    UploadFileService
   ],
   entryComponents: [
     AuthorizingPageComponent

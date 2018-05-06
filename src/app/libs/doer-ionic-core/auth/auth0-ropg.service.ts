@@ -39,7 +39,7 @@ interface LoginResult {
 const profile2Principal = (profile: A0.AdfsUserProfile): Principal => ({
   id: profile.sub,
   name: profile['https://doer.auth.com/name'],
-  avatar: profile.picture
+  avatar: profile['https://doer.auth.com/avatar'] || profile.picture
 });
 
 /**

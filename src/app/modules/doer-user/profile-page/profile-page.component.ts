@@ -9,7 +9,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Subscription } from 'rxjs/Subscription';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { IonicPage } from 'ionic-angular';
+import { IonicPage, normalizeURL } from 'ionic-angular';
 import { ionicGoAction } from '@doer/ionic-core';
 import {
   Principal,
@@ -17,7 +17,7 @@ import {
   selectPrincipal,
   logoutAction
 } from '@doer/ngx-core';
-import { CameraService } from '@doer/native';
+import { CameraService, UploadFileService } from '@doer/native';
 import { map, merge, filter, distinctUntilChanged } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
 import { equals } from 'ramda';
@@ -39,6 +39,7 @@ export class ProfilePageComponent {
   constructor(
     private readonly store: Store<AuthStore>,
     private readonly camera: CameraService,
+    private readonly uploadFile: UploadFileService,
     private readonly domSanitizer: DomSanitizer
   ) {
     this.principal$ = store.select(selectPrincipal);
@@ -55,6 +56,8 @@ export class ProfilePageComponent {
       this.avatar$.subscribe(res => {
         console.log('+++', JSON.stringify(res, null, 2));
 
+      }, err => {
+        console.log('uh oh', JSON.stringify(err, null, 2));
       });
 
   }
@@ -63,9 +66,15 @@ export class ProfilePageComponent {
     this.store.dispatch(logoutAction());
   }
 
-  onChangePhoto() {
-    this.camera.takePhoto().then(x =>
-      this.justTakenPhoto$.next(x)
-    );
+  async onChangePhoto() {
+    try {
+
+      const path = await this.camera.takePhoto();
+      this.justTakenPhoto$.next(path);
+      const uplodResult = await this.uploadFile.uploadFile(path);
+      console.log('suc', JSON.stringify(uplodResult, null, 2));
+    } catch (err) {
+      console.log('err', JSON.stringify(err, null, 2));
+    }
   }
 }

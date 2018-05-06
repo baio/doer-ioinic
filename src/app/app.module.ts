@@ -15,19 +15,7 @@ import { NgrxConstants, AuthService, AUTH_SERVICE_CONFIG, Auth0ImplicitService, 
 import { Auth0ROPGService, RouterEffects } from '@doer/ionic-core';
 
 
-/*
-const auth0Config = {
-  // Needed for Auth0 (capitalization: ID):
-  clientID: 'QTVsqmat06hTQQeavpR2j7SUuBijI2Lm',
-  // Needed for Auth0Cordova (capitalization: Id):
-  clientId: 'QTVsqmat06hTQQeavpR2j7SUuBijI2Lm',
-  domain: 'doer-stage.eu.auth0.com',
-  packageIdentifier: 'io.ionic.starter', // config.xml widget ID, e.g., com.auth0.ionic
-  redirectUri: 'http://doer-local:8100',
-  responseType: 'token id_token',
-  scope: 'openid profile'
-};
-*/
+
 
 
 const auth0Config = {
@@ -43,13 +31,18 @@ const auth0Config = {
   }
 };
 
+
 /*
 const auth0Config = {
   clientID: '5Svk7WPecVbRE165tCEYNWITRbVsIXE4',
   domain: 'baio.auth0.com',
   redirectUri: 'http://doer-local:8100',
   responseType: 'token id_token',
-  scope: 'openid profile'
+  scope: 'openid profile',
+  jwks: {
+    modulus: "b2a13309431ab4f37a42a37ce1b85c4e752657af608e41b07865f6ba5c900cfc4eed0422ca673092a5c998cabc88603d69b1b8740f5b6037f964c41b31faf720d12080fc74069fca87924e0bdc73d6b3c86dd97203a996949d8470f73210eef353fde61fd39974557acfd5c493a89a818a688bf7785340e663507e448d559e08cdc6c803cb863000060c2b1d0573e50b196a4be454e9092528fe5e2886e43de7ac6e3e427a44b6dd020c045e9470c51e45302aa398496b26ed2e352cd4f782abf07d34088b0d1a637dcb48d7e2519fd167bb19c4b9150cfa97a89e52a77d1086ef88f88b2ea13cdafdad24512f5971d0aa4888f2505e63c8017512010905bf33",
+    exp: "010001"
+  }
 };
 */
 
