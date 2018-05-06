@@ -1,10 +1,14 @@
-import { ActivatedRouteSnapshot, RouterStateSnapshot, Params } from '@angular/router';
-import { createFeatureSelector, ActionReducerMap } from '@ngrx/store';
+import {
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+} from '@angular/router';
 
 import * as fromRouter from '@ngrx/router-store';
 import { prop } from 'ramda';
-import { RouterSegment, RouterStateOutlet, RouterStateUrl } from '../ngrx.types';
-
+import {
+  RouterStateOutlet,
+  RouterStateUrl
+} from '../ngrx.types';
 
 type MapChildSnapshot = (snapshot: ActivatedRouteSnapshot) => RouterStateOutlet;
 const mapChildSnapshot: MapChildSnapshot = snapshot => ({
@@ -20,15 +24,13 @@ export interface CustomRouterState {
   router: fromRouter.RouterReducerState<RouterStateUrl>;
 }
 
-export class CustomRouterSerializer implements fromRouter.RouterStateSerializer<RouterStateUrl> {
+export class CustomRouterSerializer
+  implements fromRouter.RouterStateSerializer<RouterStateUrl> {
+
   serialize(routerState: RouterStateSnapshot): RouterStateUrl {
-
     const { url } = routerState;
-    const { queryParams } = routerState.root;
-
     const state: ActivatedRouteSnapshot = routerState.root;
     const root = mapChildSnapshot(state);
-
     return { url, root };
   }
 }

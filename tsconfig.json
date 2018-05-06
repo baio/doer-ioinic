@@ -19,7 +19,8 @@
       "@doer/ngx-core": ["app/libs/doer-ngx-core/index"],
       "@doer/native": ["app/libs/doer-native/index"],
       "@doer/user": ["app/modules/user/index"]
-    }
+    },
+    "noUnusedLocals": true
   },
   "include": [
     "src/**/*.ts"
