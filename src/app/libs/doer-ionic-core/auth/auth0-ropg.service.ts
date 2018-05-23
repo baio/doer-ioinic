@@ -43,8 +43,10 @@ const profile2Principal = (profile: A0.AdfsUserProfile): Principal => ({
 });
 
 /**
- * Integrates auth0 (resource onwer password grant flow)[https://auth0.com/docs/api-auth/tutorials/password-grant]
- * Could be work both in SPA and ionic, but the flow suppose to store refresh_token safely, which could not be done in web
+ * Integrates auth0
+ * (resource onwer password grant flow)[https://auth0.com/docs/api-auth/tutorials/password-grant]
+ * Could work both in SPA and ionic, but the flow suppose to store refresh_token safely,
+ * which could not be done in web
  * apps. Use it for Ionic app.
  * Auth enpoint must provide following api:
  * [POST] login (payload : {email: string, password: string})
@@ -112,7 +114,9 @@ export class Auth0ROPGService extends AuthService {
   }
 
   get token(): Promise<string | null> {
-    return this.isExpired.then(x => (x ? null : this.getItem('access_token')));
+    return this.isExpired
+      .then(x => (x ? null : this.getItem('access_token')))
+      .then(x => `Bearer ${x}`);
   }
 
   private updatePrincipal = (tokens: A0.AdfsUserProfile): Principal => {
@@ -156,7 +160,7 @@ export class Auth0ROPGService extends AuthService {
     this.unscheduleRenewal();
     this.principal$.next(null);
     // ???
-  };
+  }
 
   private updateStorage = (
     isRefresh: boolean,
@@ -170,7 +174,7 @@ export class Auth0ROPGService extends AuthService {
     this.setItem('id_token', res.idToken);
     this.setItem('access_token', res.accessToken);
     this.setItem('expires_at', expiresAt);
-  };
+  }
 
   private tryLoginFromLocalAsync = (): Promise<A0.AdfsUserProfile | null> => {
     return this.isExpired.then(
@@ -179,12 +183,12 @@ export class Auth0ROPGService extends AuthService {
           ? this.getItem('id_token').then(this.validateToken)
           : Promise.reject('IdToken not exists or expired')
     );
-  };
+  }
 
   public handleAuthentication = () =>
     this.tryLoginFromLocalAsync()
       .then(profile => {
-        //loginned from stored session
+        // loginned from stored session
         return { principal: profile2Principal(profile), fromStored: true };
       })
       .catch(() =>
@@ -198,10 +202,10 @@ export class Auth0ROPGService extends AuthService {
         this.scheduleRenewal();
         return res;
       })
-      .catch(err => {
-        console.log(err);
+      .catch(e => {
+        console.log(e);
         return Promise.resolve(null);
-      });
+      })
 
   // token renewal
 
@@ -211,8 +215,7 @@ export class Auth0ROPGService extends AuthService {
         token
           ? this.post<LoginResult>('refresh-token', { token })
           : Promise.reject('refresh_token not found')
-    );
-
+    )
 
   private scheduleRenewal() {
 

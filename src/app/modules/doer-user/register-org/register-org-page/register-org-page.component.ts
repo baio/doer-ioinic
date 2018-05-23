@@ -83,7 +83,7 @@ export class RegisterOrgPageComponent {
   }
 
   onCancel() {
-    this.store.dispatch(ionicGoAction({name: 'register-org-complete'}))
+    this.store.dispatch(ionicGoAction({name: 'home'}));
   }
 
 }

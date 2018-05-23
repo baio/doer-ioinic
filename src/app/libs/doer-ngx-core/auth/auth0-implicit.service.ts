@@ -66,7 +66,9 @@ export class Auth0ImplicitService extends AuthService {
   }
 
   get token(): Promise<string | null> {
-    return Promise.resolve(this.isExpired ? null : localStorage.getItem('access_token'));
+    return Promise.resolve(
+      this.isExpired ? null : localStorage.getItem('access_token')
+    );
   }
 
   login = info => {
@@ -74,13 +76,13 @@ export class Auth0ImplicitService extends AuthService {
       // never resolve since login will redirect user to a new page
       this.auth0.login(
         {
-          email: 'max-3@gmail.com',
-          password: 'Password-org-3',
+          email: info.email,
+          password: info.password,
           realm: 'Username-Password-Authentication'
         },
-        err => {
+        e => {
           // TODO : handle error !
-          reject(err);
+          reject(e);
         }
       )
     ) as any;
@@ -88,7 +90,7 @@ export class Auth0ImplicitService extends AuthService {
 
   loginFromTokens = (tokens: Tokens): Promise<Principal> => {
     return Promise.reject('not implemented');
-  }
+  };
 
   updatePrincipal = (tokens: A0.Auth0DecodedHash): Principal => {
     const principal = profile2Principal(tokens.idTokenPayload);
@@ -156,8 +158,8 @@ export class Auth0ImplicitService extends AuthService {
       .then(res => ({ principal: res, fromStored: true }))
       .catch(() =>
         this.parseHashAsync()
-        .then(this.updatePrincipal)
-        .then(res => ({ principal: res, fromStored: false }))
+          .then(this.updatePrincipal)
+          .then(res => ({ principal: res, fromStored: false }))
       )
       .then(res => {
         // user logined, schedule renewal

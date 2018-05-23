@@ -21,6 +21,7 @@ import { CameraService, UploadFileService } from '@doer/native';
 import { map, merge, filter, distinctUntilChanged } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
 import { equals } from 'ramda';
+import { goAction } from '../../../libs/doer-ngx-core/ngrx/ngrx-router/actions';
 
 @IonicPage({ name: 'profile' })
 @Component({
@@ -70,4 +71,9 @@ export class ProfilePageComponent {
       console.log('err', JSON.stringify(err, null, 2));
     }
   }
+
+  onAddWorker() {
+    this.store.dispatch(ionicGoAction({ name : 'create-worker' }));
+  }
+
 }

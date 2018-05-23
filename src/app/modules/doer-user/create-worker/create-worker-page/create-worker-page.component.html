@@ -1,0 +1,10 @@
+<dr-primary-page title="Новый рабочий">
+    <dr-ngrx-form-layout
+        [state$]="formState$"
+        [fields]="fields"
+        (action)="onAction($event)"
+        (complete)="onComplete()"
+        (cancel)="onCancel($event)"
+    >
+    </dr-ngrx-form-layout>
+</dr-primary-page>
