@@ -142,8 +142,7 @@ export class Auth0ROPGService extends AuthService {
 
   loginFromTokens = (tokens: Tokens): Promise<Principal> => {
     return this.completeLogin(false)(tokens).catch(x => {
-      console.log('---', x);
-      return Promise.reject(x)
+      return Promise.reject(x);
     });
   }
 
@@ -164,8 +163,7 @@ export class Auth0ROPGService extends AuthService {
     expiresIn: number,
     res: LoginResult
   ): void => {
-    const expiresAt = JSON.stringify(expiresIn * 1000 + new Date().getTime());
-
+    const expiresAt = JSON.stringify(expiresIn * 1000);
     if (!isRefresh) {
       this.setItem('refresh_token', res.refreshToken);
     }
@@ -207,26 +205,27 @@ export class Auth0ROPGService extends AuthService {
 
   // token renewal
 
-  private refreshTokenAsync = (): Promise<LoginResult> => {
-    return this.getItem('refresh_token').then(
+  private refreshTokenAsync = (): Promise<LoginResult> =>
+    this.getItem('refresh_token').then(
       token =>
         token
           ? this.post<LoginResult>('refresh-token', { token })
           : Promise.reject('refresh_token not found')
     );
-  };
+
 
   private scheduleRenewal() {
-    console.log('schedule renewal');
 
     this.unscheduleRenewal();
 
     const expiresIn$ = fromPromise(this.expiresAt).pipe(
       mergeMap(expiresAt => {
-        const now = Date.now();
+        const now = new Date().getTime();
         // Use timer to track delay until expiration
         // to run the refresh at the proper time
-        return timer(Math.max(1, expiresAt - now));
+        const renewalTime = Math.max(1, expiresAt - now);
+        console.log(`schedule renewal in ${renewalTime} ms`);
+        return timer(renewalTime);
       })
     );
 

@@ -1,4 +1,5 @@
-import { Injectable, Inject, InjectionToken, Optional, Injector } from '@angular/core';
+import { Injectable, Inject, InjectionToken,
+        Optional, Injector } from '@angular/core';
 import { mergeDeepLeft, pathOr, pipe, propOr, tap } from 'ramda';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
@@ -24,9 +25,11 @@ interface HandleAuthorizationResult {
 export abstract class  AuthService {
     token: Promise<string | null>;
     principal: Observable<Principal | null>;
-    abstract login = (info: {email: string, password: string}): Promise<Principal> => null;
+    abstract login =
+        (info: {email: string, password: string}): Promise<Principal> => null;
     abstract loginFromTokens = (tokens: Tokens): Promise<Principal> => null;
     abstract logout = (): void => null;
-    abstract handleAuthentication = (): Promise<HandleAuthorizationResult | null> => null;
+    abstract handleAuthentication =
+        (): Promise<HandleAuthorizationResult | null> => null;
 }
 

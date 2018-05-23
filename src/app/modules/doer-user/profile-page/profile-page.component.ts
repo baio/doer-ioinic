@@ -53,13 +53,6 @@ export class ProfilePageComponent {
         map(x => domSanitizer.bypassSecurityTrustUrl(x))
       );
 
-      this.avatar$.subscribe(res => {
-        console.log('+++', JSON.stringify(res, null, 2));
-
-      }, err => {
-        console.log('uh oh', JSON.stringify(err, null, 2));
-      });
-
   }
 
   onLogout() {

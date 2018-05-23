@@ -20,7 +20,7 @@
       "@doer/native": ["app/libs/doer-native/index"],
       "@doer/user": ["app/modules/user/index"]
     },
-    "noUnusedLocals": true
+    "noUnusedLocals": false
   },
   "include": [
     "src/**/*.ts"
