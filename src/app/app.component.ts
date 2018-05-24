@@ -38,7 +38,7 @@ export class MyApp {
           store.dispatch(loginResultAction(ok(res.principal)));
           // load users for this owner
           store.dispatch(loadUsersAction());
-          store.dispatch(ionicGoAction({name: 'workers-list', animate: false}));
+          store.dispatch(ionicGoAction({name: 'worker', id: '10', animate: false}));
         } else {
           console.log('user not logined');
           store.dispatch(ionicGoAction({name: 'home', animate: false}));

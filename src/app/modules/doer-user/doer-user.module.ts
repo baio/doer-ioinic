@@ -47,7 +47,8 @@ import { File } from '@ionic-native/file';
 import { FilePath } from '@ionic-native/file-path';
 import { Transfer } from '@ionic-native/transfer';
 import { CreateWorkerPageModule } from './create-worker/create-worker-page/create-worker-page.component.module';
-import { WorkersListPageModule } from './workers-list/workers-list-page/workers-list-page.component.module';
+import { WorkersListPageModule } from './workers-list-page/workers-list-page.component.module';
+import { WorkerPageModule } from './worker-page/worker-page.component.module';
 
 @NgModule({
   imports: [
@@ -70,6 +71,7 @@ import { WorkersListPageModule } from './workers-list/workers-list-page/workers-
     ProfilePageModule,
     CreateWorkerPageModule,
     WorkersListPageModule,
+    WorkerPageModule,
     HomePageModule
   ],
   declarations: [

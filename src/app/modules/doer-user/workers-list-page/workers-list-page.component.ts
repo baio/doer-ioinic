@@ -6,13 +6,12 @@ import {
   ChangeDetectionStrategy
 } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
-import { Field, ionicGoAction } from '../../../../libs/doer-ionic-core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { FormState, FormAction } from '../../../../libs/doer-ngx-core';
 import { IonicPage } from 'ionic-angular';
 import { repeat } from 'ramda';
-import { UsersListStore, UsersList, selectWorkers } from '../../store/users';
+import { UsersListStore, UsersList, selectWorkers } from '../store/users';
+import { ionicGoAction } from '@doer/ionic-core';
 
 
 @IonicPage({ name: 'workers-list' })
@@ -34,7 +33,7 @@ export class WorkersListPageComponent {
   }
 
   onShow(id: string) {
-    this.store.dispatch(ionicGoAction({name: 'worker', id }));
+    this.store.dispatch(ionicGoAction({name: 'worker-page', id }));
   }
 
 }

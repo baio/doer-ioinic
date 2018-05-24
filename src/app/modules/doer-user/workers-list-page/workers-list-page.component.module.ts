@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { IonicPageModule, IonicModule } from 'ionic-angular';
 
 import { WorkersListPageComponent } from './workers-list-page.component';
-import { NgxFormModule, PagesModule } from '../../../../libs/doer-ionic-core';
+import { NgxFormModule, PagesModule } from '@doer/ionic-core';
 import { CommonModule } from '@angular/common';
 
 @NgModule({
