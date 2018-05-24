@@ -10,7 +10,7 @@
 
     <ion-list [virtualScroll]="(list$ | async).items" approxItemHeight="65px" [virtualTrackBy]="trackBy">
 
-        <ion-item *virtualItem="let item" >
+        <ion-item *virtualItem="let item" (click)="onShow(item.id)">
 
             <ion-avatar item-left>
                 <ion-img [src]="item.avatar"></ion-img>

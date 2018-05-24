@@ -33,4 +33,8 @@ export class WorkersListPageComponent {
     return index;
   }
 
+  onShow(id: string) {
+    this.store.dispatch(ionicGoAction({name: 'worker', id }));
+  }
+
 }
