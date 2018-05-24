@@ -5,9 +5,10 @@
         </ion-thumbnail>
         <h2>{{user.name}}</h2>
         <button ion-button (click)="onLogout()">Logout</button>
-        <button ion-button class="secondary" (click)="onChangePhoto()">Change Photo</button>
+        <button ion-button (click)="onChangePhoto()">Change Photo</button>
     </ion-item>
     <ion-item>
-        <button ion-button class="secondary" (click)="onAddWorker()">Add worker</button>
+        <button ion-button (click)="onAddWorker()">Add worker</button>
+        <button ion-button (click)="onShowWorkers()">Show workers</button>
     </ion-item>
 </ion-list>

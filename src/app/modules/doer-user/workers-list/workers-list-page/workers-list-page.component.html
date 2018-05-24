@@ -1,0 +1,28 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>
+            Список рабочих
+        </ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+    <ion-list [virtualScroll]="(list$ | async).items" approxItemHeight="65px" [virtualTrackBy]="trackBy">
+
+        <ion-item *virtualItem="let item" >
+
+            <ion-avatar item-left>
+                <ion-img [src]="item.avatar"></ion-img>
+            </ion-avatar>
+
+            <h2>{{item.name}}</h2>
+
+            <p>{{item.photosCount}}</p>
+
+
+        </ion-item>
+
+    </ion-list>
+
+</ion-content>

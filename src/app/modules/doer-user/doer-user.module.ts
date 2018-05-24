@@ -26,6 +26,13 @@ import {
   FormEffects as CreateWorkerFormEffects
 } from './create-worker';
 
+import {
+  UsersService,
+  reducer as usersReducer,
+  Effects as UsersEffects,
+
+} from './store/users';
+
 
 //import { HomePageComponent } from './home-page/home-page.component';
 import { RegisterOrgCompletePageModule } from './register-org-complete/register-org-complete-page/register-org-complete-page.component.module';
@@ -40,6 +47,7 @@ import { File } from '@ionic-native/file';
 import { FilePath } from '@ionic-native/file-path';
 import { Transfer } from '@ionic-native/transfer';
 import { CreateWorkerPageModule } from './create-worker/create-worker-page/create-worker-page.component.module';
+import { WorkersListPageModule } from './workers-list/workers-list-page/workers-list-page.component.module';
 
 @NgModule({
   imports: [
@@ -49,24 +57,25 @@ import { CreateWorkerPageModule } from './create-worker/create-worker-page/creat
     HttpModule,
     PagesModule,
     EffectsModule.forFeature([
-      RegitserOrgFormEffects, LoginFormEffects, CreateWorkerFormEffects
+      RegitserOrgFormEffects, LoginFormEffects, CreateWorkerFormEffects, UsersEffects
     ]),
+    StoreModule.forFeature('users', usersReducer),
     StoreModule.forFeature('registerOrgForm', regitserOrgFormReducer),
     StoreModule.forFeature('createWorkerForm', createWorkerFormReducer),
     StoreModule.forFeature('loginForm', loginFormReducer),
     RegisterOrgCompletePageModule,
     RegisterOrgPageModule,
+    WorkersListPageModule,
     LoginPageModule,
     ProfilePageModule,
     CreateWorkerPageModule,
+    WorkersListPageModule,
     HomePageModule
   ],
   declarations: [
-    //HomePageComponent
     AuthorizingPageComponent
   ],
   exports: [
-    //HomePageComponent
     AuthorizingPageComponent
   ],
   providers: [
@@ -81,6 +90,7 @@ import { CreateWorkerPageModule } from './create-worker/create-worker-page/creat
     RegitserOrgFormService,
     LoginFormService,
     CreateWorkerFormService,
+    UsersService,
     // TODO: CameraModule
     Camera,
     File,

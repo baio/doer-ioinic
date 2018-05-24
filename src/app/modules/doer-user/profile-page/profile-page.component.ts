@@ -76,4 +76,8 @@ export class ProfilePageComponent {
     this.store.dispatch(ionicGoAction({ name : 'create-worker' }));
   }
 
+  onShowWorkers() {
+    this.store.dispatch(ionicGoAction({ name : 'workers-list' }));
+  }
+
 }
