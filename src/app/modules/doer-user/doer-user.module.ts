@@ -49,6 +49,7 @@ import { Transfer } from '@ionic-native/transfer';
 import { CreateWorkerPageModule } from './create-worker/create-worker-page/create-worker-page.component.module';
 import { WorkersListPageModule } from './workers-list-page/workers-list-page.component.module';
 import { WorkerPageModule } from './worker-page/worker-page.component.module';
+import { DoerCameraService } from '@doer/common';
 
 @NgModule({
   imports: [
@@ -99,6 +100,7 @@ import { WorkerPageModule } from './worker-page/worker-page.component.module';
     FilePath,
     Transfer,
     CameraService,
+    DoerCameraService,
     UploadFileService
   ],
   entryComponents: [AuthorizingPageComponent]

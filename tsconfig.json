@@ -18,7 +18,8 @@
       "@doer/ionic-core": ["app/libs/doer-ionic-core/index"],
       "@doer/ngx-core": ["app/libs/doer-ngx-core/index"],
       "@doer/native": ["app/libs/doer-native/index"],
-      "@doer/user": ["app/modules/user/index"]
+      "@doer/common": ["app/modules/doer-common/index"],
+      "@doer/user": ["app/modules/doer-user/index"]
     },
     "noUnusedLocals": false
   },

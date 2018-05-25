@@ -5,6 +5,7 @@ import { FilePath } from '@ionic-native/file-path';
 import { Platform } from 'ionic-angular';
 import { Transfer, FileUploadOptions } from '@ionic-native/transfer';
 import { AuthService, HttpConfig, HTTP_CONFIG } from '@doer/ngx-core';
+import { ok, err } from '@doer/core';
 
 @Injectable()
 export class UploadFileService {
@@ -14,23 +15,22 @@ export class UploadFileService {
     @Inject(HTTP_CONFIG)  private readonly httpConfig: HttpConfig
   ) {}
 
-  async uploadFile(path: string) {
-    const uploadUrl = `${this.httpConfig.baseUrl}update-avatar`;
-    const fileName = 'user-avatar.jpg';
+  async uploadFile(url, filePath: string, method: string = 'POST', payload?: any|null) {
+
+    const uploadUrl = `${this.httpConfig.baseUrl}${url}`;
 
     let token = await this.authService.token;
 
     const options: FileUploadOptions = {
-      fileKey: 'file',
-      fileName,
+      httpMethod: method,
       chunkedMode: false,
       mimeType: 'multipart/form-data',
-      params: { fileName },
+      params: payload,
       headers: { Authorization: 'Bearer ' + token }
     };
 
     const transfer = this.transfer.create();
 
-    return await transfer.upload(path, uploadUrl, options);
+    return transfer.upload(filePath, uploadUrl, options); // .then(ok).catch(e => Promise.resolve(err(e)));
   }
 }

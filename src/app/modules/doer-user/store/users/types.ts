@@ -18,3 +18,8 @@ export interface UsersList {
 export interface UsersListStore {
     users: UsersList;
 }
+
+export interface AddPhotoResult {
+    userId: string;
+    photosCount: number;
+}

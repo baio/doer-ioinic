@@ -33,4 +33,11 @@ export type LogoutResultAction = IResultAction<LogoutResultType, void>;
 export const logoutResultAction = resultAction<LogoutResultType, void>(logoutResultConst);
 export const isLogoutResultAction = isResultAction<LogoutResultType, void>(logoutResultConst);
 
-export type Actions = LoginAction | LoginResultAction | LogoutAction | LogoutResultAction | LoginFromTokensAction;
+export type SetAvatarType = '[ngx-core] set avatar';
+export const setAvatarConst = '[ngx-core] set avatar';
+export type SetAvatarAction = IAction<SetAvatarType, string>;
+export const setAvatarAction = action<SetAvatarType, string>(setAvatarConst);
+export const issetAvatarAction = isAction<SetAvatarType, string>(setAvatarConst);
+
+export type Actions = LoginAction | LoginResultAction | LogoutAction
+| LogoutResultAction | LoginFromTokensAction | SetAvatarAction;
