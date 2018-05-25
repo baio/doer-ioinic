@@ -94,17 +94,12 @@ export class HttpService {
   }
 
   request<T = any>(request: HttpRequest): ObservableResult<T> {
-    console.log('HttpService::get', this.config);
+    console.log('HttpService::request', this.config);
+
     const wholeUrl = propOr('', 'baseUrl', this.config) + request.url;
 
     // append headers
     const headers = new Headers();
-
-    /*
-    if (this.authService && this.authService.token) {
-      headers.append('Authorization', this.authService.token);
-    }
-    */
 
     pipe(when(isNil, always({})), toPairs, forEach(apply(headers.append)))(
       request.headers

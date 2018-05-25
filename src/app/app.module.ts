@@ -13,6 +13,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { NgrxConstants, AuthService, AUTH_SERVICE_CONFIG, Auth0ImplicitService, authReducer, AuthEffects } from '@doer/ngx-core';
 import { Auth0ROPGService, RouterEffects } from '@doer/ionic-core';
+import { TakePhotoModule } from '@doer/native';
 
 
 
@@ -58,6 +59,7 @@ const auth0Config = {
     StoreModule.forRoot(NgrxConstants.REDUCERS),
     EffectsModule.forRoot([RouterEffects, AuthEffects]),
     StoreDevtoolsModule.instrument(),
+    TakePhotoModule.forRoot(),
     DoerUserModule
   ],
   bootstrap: [IonicApp],

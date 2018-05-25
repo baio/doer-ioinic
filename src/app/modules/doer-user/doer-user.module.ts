@@ -6,7 +6,7 @@ import { IonicModule } from 'ionic-angular';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { HttpService, HTTP_CONFIG } from '@doer/ngx-core';
-import { CameraService, UploadFileService } from '@doer/native';
+import { CameraService, UploadFileService, TakePhotoModule } from '@doer/native';
 
 import {
   FormService as RegitserOrgFormService,
@@ -73,7 +73,8 @@ import { DoerCameraService } from '@doer/common';
     CreateWorkerPageModule,
     WorkersListPageModule,
     WorkerPageModule,
-    HomePageModule
+    HomePageModule,
+    TakePhotoModule
   ],
   declarations: [
     AuthorizingPageComponent
@@ -94,7 +95,9 @@ import { DoerCameraService } from '@doer/common';
     LoginFormService,
     CreateWorkerFormService,
     UsersService,
+    DoerCameraService
     // TODO: CameraModule
+    /*
     Camera,
     File,
     FilePath,
@@ -102,6 +105,7 @@ import { DoerCameraService } from '@doer/common';
     CameraService,
     DoerCameraService,
     UploadFileService
+    */
   ],
   entryComponents: [AuthorizingPageComponent]
 })

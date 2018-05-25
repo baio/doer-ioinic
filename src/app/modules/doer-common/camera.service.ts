@@ -11,6 +11,7 @@ declare var cordova: any;
 
 @Injectable()
 export class DoerCameraService {
+
   constructor(private readonly cameraService: CameraService) {}
 
   takePhoto: TakePhoto = this.cameraService.takePhoto.bind(this);

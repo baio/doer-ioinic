@@ -28,7 +28,8 @@ export class WorkerPageComponent {
     this.user$ = store.select(selectUser(navParams.get('id')));
   }
 
-  onAddWorkerPhoto(userId: string) {
+  onAddWorkerPhoto(userId: string, $event) {
+    console.log('+++', $event);
     this.store.dispatch(addWorkerPhotoAction(userId));
   }
 

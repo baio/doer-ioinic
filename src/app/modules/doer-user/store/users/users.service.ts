@@ -38,7 +38,7 @@ export class UsersService {
 
   async _addWorkerPhoto(userId: string) {
     const path = await this.cameraService.takePhotoEnlist();
-    const result = await this.uploadFileService.uploadFile(`users/${userId}/enlist-photo`, path);
+    const result = await this.uploadFileService.uploadFile(`user/${userId}/enlist-photo`, path);
     return +result.response;
   }
 
