@@ -66,7 +66,7 @@ export class AuthEffects {
 
   @Effect()
   restorePrincipal$ = this.actions$.pipe(
-    filter(A.isReStorePrincipalAction),
+    filter(A.isRestorePrincipalAction),
     flatMap(x => {
       return this.storage.get('principal');
     }),

@@ -48,7 +48,7 @@ export type RestorePrincipalType = '[ngx-core] restore principal';
 export const restorePrincipalConst = '[ngx-core] restore principal';
 export type restorePrincipalAction = IAction<RestorePrincipalType, void>;
 export const restorePrincipalAction = action<RestorePrincipalType, void>(restorePrincipalConst);
-export const isReStorePrincipalAction = isAction<RestorePrincipalType, string>(restorePrincipalConst);
+export const isRestorePrincipalAction = isAction<RestorePrincipalType, void>(restorePrincipalConst);
 
 // sync local storage principal and token one
 export type SetPrincipalDataType = '[ngx-core] set principal data';
