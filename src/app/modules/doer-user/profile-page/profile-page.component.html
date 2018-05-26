@@ -5,8 +5,8 @@
         </ion-thumbnail>
         <h2>{{user.name}}</h2>
         <button ion-button (click)="onLogout()">Logout</button>
-        <button ion-button (click)="onChangePhoto()">Change Photo</button>
-        <!--<dr-take-photo-button text="Change Photo" (click)="onChangePhoto()"></dr-take-photo-button>-->
+        <!--<button ion-button (click)="onChangePhoto()">Change Photo</button>-->
+        <dr-take-photo-button text="Change Photo" (take)="onChangePhoto()"></dr-take-photo-button>
     </ion-item>
     <ion-item>
         <button ion-button (click)="onAddWorker()">Add worker</button>

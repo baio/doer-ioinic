@@ -58,6 +58,7 @@ export class ProfilePageComponent {
   }
 
   onChangePhoto() {
+    console.log('---', window.event.target['files']);
     this.store.dispatch(updateUserAvatarAction());
   }
 

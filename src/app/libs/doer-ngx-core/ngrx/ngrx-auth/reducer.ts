@@ -17,7 +17,9 @@ export const authReducer = (state = defaultAuthState, action: A.Actions): AuthSt
     case A.loginResultConst:
       return isOK(action.payload) ? assoc('principal', action.payload.value, state) : state;
     case A.setAvatarConst:
-      return evolve({ principal : { avatar: always(action.payload) }}, state);
+      const res = evolve({ principal : { avatar: always(action.payload) }}, state);
+      console.log('???', res);
+      return res;
     default:
       return state;
   }

@@ -12,14 +12,16 @@ import { Platform } from 'ionic-angular';
 @Component({
   selector: 'dr-take-photo-button',
   template: `
-    <button ion-button (click)="click.emit($event)">{{text}}</button>
+    <button ion-button *ngIf="isMobile" (click)="take.emit($event)">{{text}}</button>
+    <input ion-button *ngIf="!isMobile" type="file" [multiple]="true" id="file_input"
+      (change)="take.emit($event);">
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TakePhotoButtonComponent {
 
   @Input() text: string;
-  @Output() click = new EventEmitter<void>();
+  @Output() take = new EventEmitter<void>();
 
   private readonly isMobile: boolean;
 

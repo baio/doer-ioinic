@@ -7,7 +7,7 @@ import { Transfer, FileUploadOptions } from '@ionic-native/transfer';
 import {
   HttpService
 } from '@doer/ngx-core';
-import { ok, err } from '@doer/core';
+import { ok, err, isOK } from '@doer/core';
 
 declare var window: Window;
 
@@ -30,15 +30,34 @@ export class UploadFileWebService {
     if (fileCount > 0) {
       // a file was selected
       for (let i = 0; i < fileCount; i++) {
-        formData.append('file', files.item(i));
+        formData.append('file_' + i, files.item(i));
       }
-      return this.httpService.request({
-        url,
-        headers: [],
-        kind: 'HttpPostLike',
-        method,
-        body: formData
-      } as any).toPromise();
+      formData.append('file_name', 'file.jpg');
+      console.log('uploadFile', url, method);
+      try {
+        const result = await this.httpService.request({
+          url,
+          headers: {mimeType: 'multipart/form-data'},
+          kind: 'HttpPostLike',
+          method,
+          body: formData
+        } as any)
+        .toPromise()
+        .then(x => {
+          if (isOK(x)) {
+            console.log('uploadFile success', x.value);
+            return x.value;
+          } else {
+            throw x.error;
+          }
+        });
+
+        return result;
+      } catch (e) {
+        console.log('uploadFile error', e);
+        throw e;
+      }
+
     } else {
       return Promise.reject('File wasnt selected');
     }

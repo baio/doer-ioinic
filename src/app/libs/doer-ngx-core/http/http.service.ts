@@ -101,7 +101,10 @@ export class HttpService {
     // append headers
     const headers = new Headers();
 
-    pipe(when(isNil, always({})), toPairs, forEach(apply(headers.append)))(
+    pipe(
+      when(isNil, always({})), toPairs, forEach(([x, y]: [any, any]) => headers.append(x, y))
+    )
+    (
       request.headers
     );
 
