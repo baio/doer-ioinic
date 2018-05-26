@@ -14,7 +14,6 @@ export type LoginFromTokensAction = IResultAction<LoginFromTokensType, Tokens>;
 export const loginFromTokensAction = resultAction<LoginFromTokensType, Tokens>(loginFromTokensConst);
 export const isLoginFromTokensAction = isResultAction<LoginFromTokensType, Tokens>(loginFromTokensConst);
 
-
 export type LoginResultType = '[ngx-core] login result';
 export const loginResultConst = '[ngx-core] login result';
 export type LoginResultAction = IResultAction<LoginResultType, Principal>;
@@ -39,5 +38,12 @@ export type SetAvatarAction = IAction<SetAvatarType, string>;
 export const setAvatarAction = action<SetAvatarType, string>(setAvatarConst);
 export const isSetAvatarAction = isAction<SetAvatarType, string>(setAvatarConst);
 
+// sync local storage principal and token one
+export type SetPrincipalDataType = '[ngx-core] set principal data';
+export const setPrincipalDataConst = '[ngx-core] set principal data';
+export type SetPrincipalDataAction = IAction<SetPrincipalDataType, string>;
+export const setPrincipalDataAction = action<SetPrincipalDataType, string>(setPrincipalDataConst);
+export const isSetPrincipalDataAction = isAction<SetPrincipalDataType, string>(setPrincipalDataConst);
+
 export type Actions = LoginAction | LoginResultAction | LogoutAction
-| LogoutResultAction | LoginFromTokensAction | SetAvatarAction;
+| LogoutResultAction | LoginFromTokensAction | SetAvatarAction | SetPrincipalDataAction;
