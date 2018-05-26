@@ -2,7 +2,7 @@ import { ActionReducer } from '@ngrx/store';
 import * as A from './actions';
 import { AuthState } from './ngrx-auth.types';
 import { ASTWithSource } from '@angular/compiler';
-import { assoc, evolve, always, merge } from 'ramda';
+import { assoc, evolve, always, merge, omit } from 'ramda';
 import { isOK } from '../../../doer-core';
 
 export const defaultAuthState: AuthState = {

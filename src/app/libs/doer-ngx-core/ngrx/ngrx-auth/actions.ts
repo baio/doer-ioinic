@@ -38,12 +38,25 @@ export type SetAvatarAction = IAction<SetAvatarType, string>;
 export const setAvatarAction = action<SetAvatarType, string>(setAvatarConst);
 export const isSetAvatarAction = isAction<SetAvatarType, string>(setAvatarConst);
 
+export type StorePrincipalType = '[ngx-core] store principal';
+export const storePrincipalConst = '[ngx-core] store principal';
+export type StorePrincipalAction = IAction<StorePrincipalType, void>;
+export const storePrincipalAction = action<StorePrincipalType, void>(storePrincipalConst);
+export const isStorePrincipalAction = isAction<StorePrincipalType, string>(storePrincipalConst);
+
+export type RestorePrincipalType = '[ngx-core] restore principal';
+export const restorePrincipalConst = '[ngx-core] restore principal';
+export type restorePrincipalAction = IAction<RestorePrincipalType, void>;
+export const restorePrincipalAction = action<RestorePrincipalType, void>(restorePrincipalConst);
+export const isReStorePrincipalAction = isAction<RestorePrincipalType, string>(restorePrincipalConst);
+
 // sync local storage principal and token one
 export type SetPrincipalDataType = '[ngx-core] set principal data';
 export const setPrincipalDataConst = '[ngx-core] set principal data';
-export type SetPrincipalDataAction = IAction<SetPrincipalDataType, string>;
-export const setPrincipalDataAction = action<SetPrincipalDataType, string>(setPrincipalDataConst);
-export const isSetPrincipalDataAction = isAction<SetPrincipalDataType, string>(setPrincipalDataConst);
+export type SetPrincipalDataAction = IAction<SetPrincipalDataType, Principal>;
+export const setPrincipalDataAction = action<SetPrincipalDataType, Principal>(setPrincipalDataConst);
+export const isSetPrincipalDataAction = isAction<SetPrincipalDataType, Principal>(setPrincipalDataConst);
 
 export type Actions = LoginAction | LoginResultAction | LogoutAction
-| LogoutResultAction | LoginFromTokensAction | SetAvatarAction | SetPrincipalDataAction;
+| LogoutResultAction | LoginFromTokensAction | SetAvatarAction
+| StorePrincipalAction | StorePrincipalAction | StorePrincipalAction | SetPrincipalDataAction;

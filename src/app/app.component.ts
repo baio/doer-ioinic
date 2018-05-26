@@ -5,7 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { AuthService } from './libs/doer-ngx-core/auth/auth.service';
 import { Store } from '@ngrx/store';
 import { ionicGoAction } from './libs/doer-ionic-core';
-import { loginResultAction } from './libs/doer-ngx-core/ngrx/ngrx-auth/actions';
+import { loginResultAction, storePrincipalAction, restorePrincipalAction } from '@doer/ngx-core';
 import { ok } from './libs/doer-core';
 import { AuthorizingPageComponent } from './modules/doer-user/authorizing-page/authorizing-page.component';
 import { loadUsersAction } from './modules/doer-user/store/users';
@@ -39,20 +39,16 @@ export class MyApp {
           store.dispatch(loginResultAction(ok(res.principal)));
           // load users for this owner
           store.dispatch(loadUsersAction());
-          store.dispatch(ionicGoAction({name: 'profile', animate: false}));
-          if (res.fromStore) {
+          if (res.fromStored) {
             // principal could be updated but token not
-            console.log('set principal data!!!');
-            return storage.get('principal').then(x => {
-              if (x) {
-                console.log('update store principal');
-                store.dispatch(loadUsersAction());
-              }
-            });
+            console.log('restore principal data from stored one');
+            store.dispatch(restorePrincipalAction());
           } else {
             // sync stored principal and one from token
-            return storage.set('principal', res.principal);
+            console.log('store principal from token');
+            store.dispatch(storePrincipalAction());
           }
+          store.dispatch(ionicGoAction({name: 'profile', animate: false}));
         } else {
           console.log('user not logined');
           store.dispatch(ionicGoAction({name: 'home', animate: false}));

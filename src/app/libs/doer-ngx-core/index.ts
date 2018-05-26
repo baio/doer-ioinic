@@ -5,3 +5,4 @@ export * from './http/http.types';
 export * from './http/http.service';
 
 export * from './auth';
+export * from './storage.service';

@@ -1,14 +1,21 @@
-import { Injectable } from "@angular/core";
-import { Effect, Actions } from "@ngrx/effects";
-import { AuthService } from "../../auth/auth.service";
-import * as A from "./actions";
-import { filter, mapTo, tap, map, flatMap, withLatestFrom } from "rxjs/operators";
-import { filterMap$, getPayload, ofPromiseR$, ok } from "../../../doer-core";
-import { pipe } from "ramda";
-import { AuthStore } from "./ngrx-auth.types";
-import { Store } from "@ngrx/store";
-import { selectPrincipal } from "./selectors";
-import { Storage } from '@ionic/storage';
+import { Injectable } from '@angular/core';
+import { Effect, Actions } from '@ngrx/effects';
+import { AuthService } from '../../auth/auth.service';
+import * as A from './actions';
+import {
+  filter,
+  mapTo,
+  tap,
+  map,
+  flatMap,
+  withLatestFrom
+} from 'rxjs/operators';
+import { filterMap$, getPayload, ofPromiseR$, ok } from '../../../doer-core';
+import { pipe, omit, isNil, not } from 'ramda';
+import { AuthStore } from './ngrx-auth.types';
+import { Store } from '@ngrx/store';
+import { selectPrincipal } from './selectors';
+import { StorageService } from '../../storage.service';
 
 @Injectable()
 export class AuthEffects {
@@ -16,7 +23,7 @@ export class AuthEffects {
     private readonly actions$: Actions,
     private readonly authService: AuthService,
     private readonly store: Store<AuthStore>,
-    private readonly storage: Storage
+    private readonly storage: StorageService
   ) {}
 
   @Effect()
@@ -42,21 +49,28 @@ export class AuthEffects {
     mapTo(A.logoutResultAction(ok(null)))
   );
 
-  // sync local principal with token principal
-  // during session principal data could be updated but token stays the same, sync it
-  @Effect({dispatch: false})
+  @Effect()
   avatarChanged$ = this.actions$.pipe(
-    filterMap$(A.isSetAvatarAction)(getPayload),
-    withLatestFrom(this.store.select(selectPrincipal), (avatar, principal) => ({
-      ...principal, avatar
-    })),
-    // store principal locally / restore on app start
+    filter(A.isSetAvatarAction),
+    map(() => A.storePrincipalAction())
+  );
+
+  @Effect({ dispatch: false })
+  storePrincipal$ = this.actions$.pipe(
+    filter(A.isStorePrincipalAction),
+    withLatestFrom(this.store.select(selectPrincipal), (avatar, principal) => principal),
     flatMap(x => {
-      console.log('!!!', x);
-      return this.storage.set('principal', x);
+      return this.storage.set('principal', omit(['id'], x));
     })
   );
 
-
-
+  @Effect()
+  restorePrincipal$ = this.actions$.pipe(
+    filter(A.isReStorePrincipalAction),
+    flatMap(x => {
+      return this.storage.get('principal');
+    }),
+    filter(pipe(isNil, not)),
+    map(A.setPrincipalDataAction)
+  );
 }

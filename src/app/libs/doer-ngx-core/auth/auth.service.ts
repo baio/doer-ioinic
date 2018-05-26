@@ -18,7 +18,7 @@ export interface Auth0Config {
 
 interface HandleAuthorizationResult {
     principal: Principal;
-    fromStore: boolean;
+    fromStored: boolean;
 }
 
 @Injectable()

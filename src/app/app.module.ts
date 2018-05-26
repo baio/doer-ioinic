@@ -13,7 +13,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { NgrxConstants, AuthService, AUTH_SERVICE_CONFIG, Auth0ImplicitService, authReducer, AuthEffects } from '@doer/ngx-core';
 import { Auth0ROPGService, RouterEffects } from '@doer/ionic-core';
-import { TakePhotoModule } from '@doer/native';
+import { TakePhotoModule, StorageModule, StorageService } from '@doer/native';
 
 
 
@@ -60,6 +60,7 @@ const auth0Config = {
     EffectsModule.forRoot([RouterEffects, AuthEffects]),
     StoreDevtoolsModule.instrument(),
     TakePhotoModule.forRoot(),
+    StorageModule.forRoot(),
     DoerUserModule
   ],
   bootstrap: [IonicApp],
@@ -70,6 +71,7 @@ const auth0Config = {
   providers: [
     StatusBar,
     SplashScreen,
+    StorageService,
     {provide: AUTH_SERVICE_CONFIG, useValue: auth0Config },
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     {provide: AuthService, useClass: Auth0ROPGService}
