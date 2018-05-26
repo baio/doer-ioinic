@@ -2,7 +2,7 @@ import { ActionReducer } from '@ngrx/store';
 import * as A from './actions';
 import { AuthState } from './ngrx-auth.types';
 import { ASTWithSource } from '@angular/compiler';
-import { assoc } from 'ramda';
+import { assoc, evolve, always } from 'ramda';
 import { isOK } from '../../../doer-core';
 
 export const defaultAuthState: AuthState = {
@@ -16,8 +16,11 @@ export const authReducer = (state = defaultAuthState, action: A.Actions): AuthSt
       return isOK(action.payload as any) ? assoc('principal', null, state) : state;
     case A.loginResultConst:
       return isOK(action.payload) ? assoc('principal', action.payload.value, state) : state;
+    case A.setAvatarConst:
+      return evolve({ principal : { avatar: always(action.payload) }}, state);
     default:
       return state;
   }
-}
+};
+
 

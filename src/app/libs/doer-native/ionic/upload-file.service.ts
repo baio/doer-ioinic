@@ -35,7 +35,9 @@ export class UploadFileService {
     const transfer = this.transfer.create();
 
     try {
-      return await transfer.upload(filePath, uploadUrl, options);
+      const res =  await transfer.upload(filePath, uploadUrl, options);
+      console.log('uploadFile success', res);
+      return JSON.parse(res.response);
     } catch (err) {
       console.error('uploadFile error', err);
       throw err;

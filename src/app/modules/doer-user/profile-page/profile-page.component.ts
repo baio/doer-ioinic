@@ -48,7 +48,7 @@ export class ProfilePageComponent {
         filter(x => !!x),
         map(p => p.avatar),
         distinctUntilChanged(),
-        map(x => domSanitizer.bypassSecurityTrustUrl(x))
+        map(x => domSanitizer.bypassSecurityTrustResourceUrl(x))
       );
 
   }

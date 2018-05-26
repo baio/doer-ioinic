@@ -49,10 +49,9 @@ export class UsersService {
     );
     const avatarResult = await this.uploadFileService.uploadFile(
       `users/${userId}/avatar`,
-      path,
-      'PATCH'
+      path
     );
-    return avatarResult.response;
+    return avatarResult;
   }
 
   addFirstWorkerPhoto = (userId: string) =>
@@ -67,7 +66,7 @@ export class UsersService {
       `users/${userId}/enlist-photo`,
       path
     );
-    return +result.response;
+    return +result;
   }
 
   addWorkerPhoto = (userId: string) =>
@@ -80,10 +79,9 @@ export class UsersService {
     const path = await this.cameraService.takePhotoAvatar();
     const result = await this.uploadFileService.uploadFile(
       'user/avatar',
-      path,
-      'POST'
+      path
     );
-    return result.response;
+    return result;
   }
 
   updateUserAvatar = () =>
