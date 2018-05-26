@@ -81,7 +81,7 @@ export class UsersService {
     const result = await this.uploadFileService.uploadFile(
       'user/avatar',
       path,
-      'patch'
+      'POST'
     );
     return result.response;
   }

@@ -12,9 +12,7 @@ import { Platform } from 'ionic-angular';
 @Component({
   selector: 'dr-take-photo-button',
   template: `
-    <input ion-button *ngIf="!isMobile" type="file" [multiple]="true" id="file_input"
-      (change)="click.emit($event)">
-    <button *ngIf="isMobile" ion-button (click)="click.emit($event)">{{text}}</button>
+    <button ion-button (click)="click.emit($event)">{{text}}</button>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })

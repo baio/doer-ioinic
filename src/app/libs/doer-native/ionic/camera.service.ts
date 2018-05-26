@@ -30,6 +30,8 @@ export class CameraService {
       allowEdit: true*/
     }, opts || {});
 
+    console.log('takePhoto', options);
+
     const url: string = await this.camera.getPicture(options);
 
     return normalizeURL(url);

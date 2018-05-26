@@ -18,7 +18,7 @@ import { TakePhotoModule } from '@doer/native';
 
 
 
-
+/*
 const auth0Config = {
   // Needed for Auth0 (capitalization: ID):
   clientID: 'QTVsqmat06hTQQeavpR2j7SUuBijI2Lm',
@@ -31,9 +31,9 @@ const auth0Config = {
     modulus: 'e28d34a0d37ce72681dcf056fbda092b48eadea6518554cb3c0f994018e37f9c586d514e024a04d5e93cd5e3778ef26032e81c5b339854abe1ee4b6787280e02133f9865f677bb26a4336d8bd0071ae1fe6aa1f5aeec7560e4891479b7b6903f1aea60f55487289c15ae6e2071a7f413c44f5f638664a51c4c984234811f73ea7a4d2b0ff4819c6ac62d2cb4258e14453bce182c010b4eca7706bc9be6337824bad17911411416777b3d012101d4d4293b7c80476774c9085a2d93a1601b788dbe65f7a2667f9b097d5e6fe580ee2c87368bb6ad442484b00246d295384c6b8ff95e10819eb69c930d4709aae93b1a7d3e4de032226b1bd30eb4c90507752f2f'
   }
 };
+*/
 
 
-/*
 const auth0Config = {
   clientID: '5Svk7WPecVbRE165tCEYNWITRbVsIXE4',
   domain: 'baio.auth0.com',
@@ -45,7 +45,7 @@ const auth0Config = {
     exp: "010001"
   }
 };
-*/
+
 
 @NgModule({
   declarations: [

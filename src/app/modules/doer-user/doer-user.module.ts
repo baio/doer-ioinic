@@ -86,10 +86,9 @@ import { DoerCameraService } from '@doer/common';
     {
       provide: HTTP_CONFIG,
       useValue: {
-        baseUrl: 'https://doer-stage.azurewebsites.net/api/'
+        //baseUrl: 'https://doer-stage.azurewebsites.net/api/'
         //baseUrl: 'http://localhost:7071/api/'
-        //'http://192.168.0.100:777/api/'*/,/
-        //'https://doer-stage.azurewebsites.net/api/'*/
+        baseUrl: 'http://192.168.0.100:777/api/'
       }
     },
     HttpService,

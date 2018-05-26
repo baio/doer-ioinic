@@ -19,18 +19,26 @@ export class UploadFileService {
 
     const uploadUrl = `${this.httpConfig.baseUrl}${url}`;
 
-    let token = await this.authService.token;
+    console.log('uploadFile', uploadUrl, filePath, method, payload);
+
+    const token = await this.authService.token;
 
     const options: FileUploadOptions = {
       httpMethod: method,
       chunkedMode: false,
       mimeType: 'multipart/form-data',
-      params: payload,
-      headers: { Authorization: 'Bearer ' + token }
+      headers: { Authorization: token },
+      params: { fileName: 'file.jpg' },
+      fileKey: 'file'
     };
 
     const transfer = this.transfer.create();
 
-    return transfer.upload(filePath, uploadUrl, options); // .then(ok).catch(e => Promise.resolve(err(e)));
+    try {
+      return await transfer.upload(filePath, uploadUrl, options);
+    } catch (err) {
+      console.error('uploadFile error', err);
+      throw err;
+    }
   }
 }

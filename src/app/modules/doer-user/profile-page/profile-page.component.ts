@@ -57,7 +57,7 @@ export class ProfilePageComponent {
     this.store.dispatch(logoutAction());
   }
 
-  async onChangePhoto() {
+  onChangePhoto() {
     this.store.dispatch(updateUserAvatarAction());
   }
 
