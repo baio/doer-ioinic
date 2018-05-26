@@ -8,7 +8,7 @@ import {
 import { ok, ObservableResult, err, mapR$ } from '@doer/core';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/Observable/of';
-import { UsersList } from './types';
+import { UsersList, User } from './types';
 import { repeat, map, evolve, pipe, when, isNil, always } from 'ramda';
 import { UploadFileService, CameraService } from '@doer/native';
 import { DoerCameraService } from '@doer/common';
@@ -23,6 +23,11 @@ const mapListResult = list => ({
   )
 }) as any;
 
+const toObsResult = <T>(f: Promise<T>) =>  fromPromise(
+  f.then(ok).catch(err)
+);
+
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -35,6 +40,27 @@ export class UsersService {
     return this.httpService.get('users').pipe(mapR$(mapListResult));
   };
 
+  async _addFirstWorkerPhoto(userId: string) {
+    // If this first user photo take it as for avatar and then update also user's profile avatar
+    const path = await this.cameraService.takePhotoAvatar();
+    const result = await this.uploadFileService.uploadFile(
+      `users/${userId}/enlist-photo`,
+      path
+    );
+    const avatarResult = await this.uploadFileService.uploadFile(
+      `users/${userId}/avatar`,
+      path,
+      'PATCH'
+    );
+    return avatarResult.response;
+  }
+
+  addFirstWorkerPhoto = (userId: string) =>
+    toObsResult(
+      this._addFirstWorkerPhoto(userId)
+        .then(avatar => ({ userId, avatar }))
+    )
+
   async _addWorkerPhoto(userId: string) {
     const path = await this.cameraService.takePhotoEnlist();
     const result = await this.uploadFileService.uploadFile(
@@ -45,11 +71,10 @@ export class UsersService {
   }
 
   addWorkerPhoto = (userId: string) =>
-    fromPromise(
+    toObsResult(
       this._addWorkerPhoto(userId)
-        .then(photosCount => ok({ userId, photosCount }))
-        .catch(err)
-    );
+        .then(photosCount => ({ userId, photosCount }))
+    )
 
   async _updateUserAvatar() {
     const path = await this.cameraService.takePhotoAvatar();
@@ -62,9 +87,5 @@ export class UsersService {
   }
 
   updateUserAvatar = () =>
-    fromPromise(
-      this._updateUserAvatar()
-        .then(ok)
-        .catch(err)
-    );
+    toObsResult(this._updateUserAvatar())
 }

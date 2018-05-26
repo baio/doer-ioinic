@@ -22,6 +22,7 @@ export const isLoadUsersResultAction = isResultAction<LoadUsersResultActionType,
     loadUsersResultActionConst
 );
 
+// TODO: UpdatePrincipalAvatar !
 type UpdateUserAvatarActionType = '[doer-user] update user avatar action';
 export const updateUserAvatarActionConst = '[doer-user] update user avatar action';
 export type UpdateUserAvatarAction = IAction<UpdateUserAvatarActionType, void>;
@@ -30,6 +31,17 @@ export const updateUserAvatarAction = action<UpdateUserAvatarActionType, void>(
 );
 export const isUpdateUserAvatarAction = isAction<UpdateUserAvatarActionType, void>(
     updateUserAvatarActionConst
+);
+
+interface SetUserAvatarActionPayload { userId: string; avatar: string; }
+type SetUserAvatarActionType = '[doer-user] set user avatar action';
+export const setUserAvatarActionConst = '[doer-user] set user avatar action';
+export type SetUserAvatarAction = IAction<SetUserAvatarActionType, SetUserAvatarActionPayload>;
+export const setUserAvatarAction = action<SetUserAvatarActionType, SetUserAvatarActionPayload>(
+    setUserAvatarActionConst
+);
+export const issetUserAvatarAction = isAction<SetUserAvatarActionType, SetUserAvatarActionPayload>(
+    setUserAvatarActionConst
 );
 
 
@@ -54,4 +66,4 @@ export const isAddWorkerPhotoResultAction = isResultAction<AddWorkerPhotoResultA
 );
 
 export type Action = LoadUsersAction | LoadUsersResultAction | AddWorkerPhotoAction
-    | AddWorkerPhotoResultAction |  UpdateUserAvatarAction;
+    | AddWorkerPhotoResultAction |  UpdateUserAvatarAction | SetUserAvatarAction;

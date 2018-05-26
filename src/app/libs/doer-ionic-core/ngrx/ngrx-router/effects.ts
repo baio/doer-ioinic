@@ -19,7 +19,6 @@ export class RouterEffects {
     filter(isIonicGoAction),
     map(action => action.payload),
     tap(({ name, id, animate }) => {
-      console.log('!!!', id);
       this.navController.push(name, id ? { id } : undefined, { animate });
     })
   );
