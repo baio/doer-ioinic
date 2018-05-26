@@ -15,6 +15,7 @@ import {
   HttpService
 } from '@doer/ngx-core';
 import { UploadFileWebService } from './web/upload-file-web.service';
+import { TakePhotoButtonComponent } from './take-photo-button.component';
 
 
 export function getCameraService(platform: Platform, camera: Camera) {
@@ -49,8 +50,11 @@ export function getUploadFileService(
   imports: [
     IonicModule
   ],
-  declarations: [],
+  declarations: [
+    TakePhotoButtonComponent
+  ],
   exports: [
+    TakePhotoButtonComponent
   ]
 })
 export class TakePhotoModule {

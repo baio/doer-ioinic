@@ -5,24 +5,23 @@ import {
   HttpService,
   DisplayErrorFn
 } from '@doer/ngx-core';
-import { ok, ObservableResult, err } from '@doer/core';
+import { ok, ObservableResult, err, mapR$ } from '@doer/core';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/Observable/of';
 import { UsersList } from './types';
-import { repeat } from 'ramda';
+import { repeat, map, evolve, pipe, when, isNil, always } from 'ramda';
 import { UploadFileService, CameraService } from '@doer/native';
 import { DoerCameraService } from '@doer/common';
 import { fromPromise } from 'rxjs/observable/fromPromise';
 
-const DATA =
-  {
-    id: '10',
-    name: 'Petya',
-    kind: 'Worker',
-    avatar: 'https://static.getjar.com/icon-50x50/f9/883743_thm.png',
-    photosCount: 5
-  };
+const DEFAULT_AVATAR = 'https://static.getjar.com/icon-50x50/f9/883743_thm.png';
 
+const mapListResult = list => ({
+  items: map(
+    evolve({ avatar: when(isNil, always(DEFAULT_AVATAR)) }),
+    list
+  )
+}) as any;
 
 @Injectable()
 export class UsersService {
@@ -33,26 +32,39 @@ export class UsersService {
   ) {}
 
   load = (): ObservableResult<UsersList> => {
-    return of(ok({ items: repeat(DATA, 1000) }));
-  }
+    return this.httpService.get('users').pipe(mapR$(mapListResult));
+  };
 
   async _addWorkerPhoto(userId: string) {
     const path = await this.cameraService.takePhotoEnlist();
-    const result = await this.uploadFileService.uploadFile(`user/${userId}/enlist-photo`, path);
+    const result = await this.uploadFileService.uploadFile(
+      `users/${userId}/enlist-photo`,
+      path
+    );
     return +result.response;
   }
 
   addWorkerPhoto = (userId: string) =>
     fromPromise(
-      this._addWorkerPhoto(userId).then(photosCount => ok({userId, photosCount})).catch(err)
-    )
+      this._addWorkerPhoto(userId)
+        .then(photosCount => ok({ userId, photosCount }))
+        .catch(err)
+    );
 
   async _updateUserAvatar() {
     const path = await this.cameraService.takePhotoAvatar();
-    const result = await this.uploadFileService.uploadFile('user/avatar', path, 'patch');
+    const result = await this.uploadFileService.uploadFile(
+      'user/avatar',
+      path,
+      'patch'
+    );
     return result.response;
   }
 
-  updateUserAvatar = ()  =>
-    fromPromise(this._updateUserAvatar().then(ok).catch(err))
+  updateUserAvatar = () =>
+    fromPromise(
+      this._updateUserAvatar()
+        .then(ok)
+        .catch(err)
+    );
 }

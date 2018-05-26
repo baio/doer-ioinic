@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { UsersService } from './users.service';
 import { filterMap$, getPayload, mapR, isOK } from '@doer/core';
 import * as A from './actions';
-import { switchMap, map, filter } from 'rxjs/operators';
+import { switchMap, map, filter, tap } from 'rxjs/operators';
 import { UploadFileService, CameraService } from '@doer/native';
 import { setAvatarAction } from '@doer/ngx-core';
 import { prop } from 'ramda';
@@ -27,7 +27,7 @@ export class Effects {
 
   @Effect()
   updateUserAvatar$ = this.actions$.pipe(
-    filterMap$(A.isupdateUserAvatarAction)(getPayload),
+    filterMap$(A.isUpdateUserAvatarAction)(getPayload),
     // TODO : show error !
     switchMap(this.usersService.updateUserAvatar),
     filterMap$(isOK)(prop('value')),

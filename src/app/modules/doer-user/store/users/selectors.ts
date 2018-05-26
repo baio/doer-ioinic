@@ -5,7 +5,7 @@ import { filter, propEq, evolve, identity, find, pipe, prop } from 'ramda';
 export const selectUsers = createFeatureSelector<UsersList>('users');
 
 type SelectType = (type: UserTypes) => (list: UsersList) => UsersList;
-const selectType: SelectType = type => evolve({ items : filter(propEq('kind', type)) });
+const selectType: SelectType = type => evolve({ items : filter(propEq('role', type)) });
 
 export const selectWorkers = createSelector(selectUsers, selectType('Worker'));
 

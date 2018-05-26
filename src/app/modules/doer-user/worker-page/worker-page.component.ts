@@ -14,7 +14,7 @@ import { UsersListStore, UsersList, selectWorkers, selectUser, User, addWorkerPh
 import { ionicGoAction } from '@doer/ionic-core';
 
 
-@IonicPage({ name: 'worker', segment: 'workers/:id' })
+@IonicPage({ name: 'worker-page', segment: 'workers/:id' })
 @Component({
   selector: 'dr-user-worker-page',
   templateUrl: './worker-page.component.html',
@@ -29,7 +29,6 @@ export class WorkerPageComponent {
   }
 
   onAddWorkerPhoto(userId: string, $event) {
-    console.log('+++', $event);
     this.store.dispatch(addWorkerPhotoAction(userId));
   }
 

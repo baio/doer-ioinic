@@ -24,7 +24,7 @@ import { equals } from 'ramda';
 import { goAction } from '../../../libs/doer-ngx-core/ngrx/ngrx-router/actions';
 import { updateUserAvatarAction } from '../store/users';
 
-@IonicPage({ name: 'profile' })
+@IonicPage({ name: 'profile', segment: 'profile' })
 @Component({
   selector: 'dr-user-profile-page',
   templateUrl: './profile-page.component.html',
@@ -33,10 +33,7 @@ import { updateUserAvatarAction } from '../store/users';
 export class ProfilePageComponent {
 
   readonly avatar$: Observable<SafeUrl>;
-  // readonly justTakenPhoto$ =new Subject<string>();
-
   readonly principal$: Observable<Principal>;
-
 
   constructor(
     private readonly store: Store<AuthStore>,
@@ -50,7 +47,6 @@ export class ProfilePageComponent {
       .pipe(
         filter(x => !!x),
         map(p => p.avatar),
-        // merge(this.justTakenPhoto$),
         distinctUntilChanged(),
         map(x => domSanitizer.bypassSecurityTrustUrl(x))
       );
@@ -62,19 +58,7 @@ export class ProfilePageComponent {
   }
 
   async onChangePhoto() {
-
-    // this.justTakenPhoto$.next(path);
     this.store.dispatch(updateUserAvatarAction());
-    /*
-    try {
-      const path = await this.camera.takePhoto();
-      this.justTakenPhoto$.next(path);
-      const uplodResult = await this.uploadFile.uploadFile('users/avatar', path, 'patch');
-      console.log('suc', JSON.stringify(uplodResult, null, 2));
-    } catch (err) {
-      console.log('err', JSON.stringify(err, null, 2));
-    }
-    */
   }
 
   onAddWorker() {

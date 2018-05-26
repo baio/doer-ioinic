@@ -13,10 +13,10 @@
         <ion-item *virtualItem="let item" (click)="onShow(item.id)">
 
             <ion-avatar item-left>
-                <ion-img [src]="item.avatar"></ion-img>
+                <ion-img *ngIf="item.avatar" [src]="item.avatar"></ion-img>
             </ion-avatar>
 
-            <h2>{{item.name}}</h2>
+            <h2>{{item.firstName}} {{item.midName}} {{item.lastName}}</h2>
 
             <p>{{item.photosCount}}</p>
 

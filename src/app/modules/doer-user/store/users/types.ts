@@ -1,7 +1,13 @@
 export interface User {
     id: string;
-    name: string;
+    firstName: string;
+    midName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    ancestors: string[];
     avatar: string;
+    photosCount: number;
 }
 
 export interface Worker extends User {

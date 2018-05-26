@@ -30,7 +30,7 @@ export class UploadFileWebService {
     if (fileCount > 0) {
       // a file was selected
       for (let i = 0; i < fileCount; i++) {
-        formData.append('file[]', files.item(i));
+        formData.append('file', files.item(i));
       }
       return this.httpService.request({
         url,

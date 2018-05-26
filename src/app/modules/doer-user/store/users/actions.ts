@@ -28,7 +28,7 @@ export type UpdateUserAvatarAction = IAction<UpdateUserAvatarActionType, void>;
 export const updateUserAvatarAction = action<UpdateUserAvatarActionType, void>(
     updateUserAvatarActionConst
 );
-export const isupdateUserAvatarAction = isAction<UpdateUserAvatarActionType, void>(
+export const isUpdateUserAvatarAction = isAction<UpdateUserAvatarActionType, void>(
     updateUserAvatarActionConst
 );
 

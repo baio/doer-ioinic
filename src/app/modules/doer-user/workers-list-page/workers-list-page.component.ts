@@ -14,7 +14,7 @@ import { UsersListStore, UsersList, selectWorkers } from '../store/users';
 import { ionicGoAction } from '@doer/ionic-core';
 
 
-@IonicPage({ name: 'workers-list' })
+@IonicPage({ name: 'workers-list', segment: 'workers' })
 @Component({
   selector: 'dr-user-workers-list-page',
   templateUrl: './workers-list-page.component.html',
@@ -29,7 +29,7 @@ export class WorkersListPageComponent {
   }
 
   trackBy = (index, item) => {
-    return index;
+    return item.id;
   }
 
   onShow(id: string) {
