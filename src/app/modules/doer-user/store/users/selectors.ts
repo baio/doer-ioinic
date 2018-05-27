@@ -15,4 +15,4 @@ export const selectWorkersList = createSelector(selectUsersList, selectType('Wor
 
 export const selectMastersList = createSelector(selectUsersList, selectType('Master'));
 
-export const selectUser = (id: string) => createSelector(selectUsersSet, x => x[id]);
+export const selectUser = (id: string) => createSelector(selectUsersSet, x => x ? x[id] : null);
