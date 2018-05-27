@@ -31,12 +31,30 @@ export class Effects {
 
   @Effect()
   updateUserAvatar$ = this.actions$.pipe(
-    filterMap$(A.isUpdateUserAvatarAction)(getPayload),
+    filterMap$(A.isUpdatePrincipalAvatarAction)(getPayload),
     // TODO : show error !
-    switchMap(this.usersService.updateUserAvatar),
+    switchMap(this.usersService.updatePrincipalAvatar),
     filterMap$(isOK)(prop('value')),
     map(setAvatarAction)
   );
+
+  @Effect()
+  changeWorkerAvatar$ = this.actions$.pipe(
+    filterMap$(A.isChangeWorkerAvatarAction)(getPayload),
+    switchMap(this.usersService.updateUserAvatar),
+    map(A.changeWorkerAvatarResultAction),
+    tap(console.log)
+  );
+
+  // just map changeWorkerAvatarResultAction -> setUserAvatarAction
+  @Effect()
+  changeWorkerAvatarSuccess$ = this.actions$.pipe(
+    filterMap$(A.isChangeWorkerAvatarResultAction)(getPayload),
+    tap(console.log),
+    filterMap$(isOK)(prop('value')),
+    map(A.setUserAvatarAction)
+  );
+
 
   addWorkerPhoto$ = this.actions$.pipe(
     filterMap$(A.isAddWorkerPhotoAction)(getPayload),

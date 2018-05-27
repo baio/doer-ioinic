@@ -10,7 +10,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { repeat } from 'ramda';
-import { UsersListStore, Users, selectWorkersList, selectUser, User, addWorkerPhotoAction } from '../store/users';
+import { UsersListStore, Users, selectWorkersList, selectUser, User, addWorkerPhotoAction, isChangeWorkerAvatarAction, changeWorkerAvatarAction } from '../store/users';
 import { ionicGoAction } from '@doer/ionic-core';
 
 
@@ -30,6 +30,10 @@ export class WorkerPageComponent {
 
   onAddWorkerPhoto(userId: string) {
     this.store.dispatch(addWorkerPhotoAction(userId));
+  }
+
+  onChangeWorkerAvatar(userId: string) {
+    this.store.dispatch(changeWorkerAvatarAction(userId));
   }
 
 }

@@ -79,7 +79,7 @@ export class UsersService {
         .then(photosCount => ({ userId, photosCount }))
     )
 
-  async _updateUserAvatar() {
+  async _updatePrincipalAvatar() {
     const path = await this.cameraService.takePhotoAvatar();
     const result = await this.uploadFileService.uploadFile(
       'user/avatar',
@@ -88,6 +88,20 @@ export class UsersService {
     return result;
   }
 
-  updateUserAvatar = () =>
-    toObsResult(this._updateUserAvatar())
+  updatePrincipalAvatar = () =>
+    toObsResult(this._updatePrincipalAvatar())
+
+  async _updateUserAvatar(userId: string) {
+      const path = await this.cameraService.takePhotoAvatar();
+      const result = await this.uploadFileService.uploadFile(
+        `users/${userId}/avatar`,
+        path
+      );
+      console.log('success!', result);
+      return {userId, avatar: result};
+    }
+
+  updateUserAvatar = (userId: string) =>
+      toObsResult(this._updateUserAvatar(userId))
+
 }

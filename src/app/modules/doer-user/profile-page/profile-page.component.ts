@@ -22,7 +22,7 @@ import { map, merge, filter, distinctUntilChanged } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
 import { equals } from 'ramda';
 import { goAction } from '../../../libs/doer-ngx-core/ngrx/ngrx-router/actions';
-import { updateUserAvatarAction } from '../store/users';
+import { updatePrincipalAvatarAction } from '../store/users';
 
 @IonicPage({ name: 'profile', segment: 'profile' })
 @Component({
@@ -58,7 +58,7 @@ export class ProfilePageComponent {
   }
 
   onChangePhoto() {
-    this.store.dispatch(updateUserAvatarAction());
+    this.store.dispatch(updatePrincipalAvatarAction());
   }
 
   onAddWorker() {
