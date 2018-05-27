@@ -21,8 +21,7 @@ export class LoginPageComponent {
 
   constructor(
     private readonly store: Store<LoginFormStore>
-  )
-  {
+  ){
 
     this.formState$ = store.select(selectFormSubState);
 
@@ -40,8 +39,6 @@ export class LoginPageComponent {
         validation: { required : true }
       }
     ];
-
-
   }
 
   onAction(action: FormAction) {
@@ -49,7 +46,7 @@ export class LoginPageComponent {
   }
 
   onCancel() {
-    this.store.dispatch(ionicGoAction({name: 'register-org-complete'}))
+    this.store.dispatch(ionicGoAction({name: 'home'}));
   }
 
 }

@@ -41,7 +41,7 @@ const parseServerResponseJson = (response: Response) => {
   return json;
 };
 
-const parseServerError = (response: Response): HttpError => {
+export const parseServerError = (response: Response): HttpError => {
   if (response.status === 0) {
     return { code: 'CONNECTION_LOST', msg: null };
   }

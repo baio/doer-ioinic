@@ -25,7 +25,6 @@ import {
   isOK,
   ok,
   flatMapR$,
-  ofPromiseR$,
   mapR
 } from '@doer/core';
 import { filter } from 'rxjs/operators/filter';

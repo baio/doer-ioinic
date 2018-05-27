@@ -5,6 +5,7 @@ import { Fun } from './_';
 import { prop } from 'ramda';
 import { of } from 'rxjs/Observable/of';
 import { fromPromise } from 'rxjs/observable/fromPromise';
+import { parseServerError } from '@doer/ngx-core';
 /**
  * All these functions mostly transformation of Result operators to Observable<Result> operators
  */
@@ -43,7 +44,8 @@ export const flatMapR$: FlatMapR$ = f => obs => obs.pipe(
 
 
 export type OfPromiseR$ = <T1>(p: Promise<T1>) => Observable<Result<T1>>;
-export const ofPromiseR$: OfPromiseR$ = p => fromPromise(p).pipe(map(ok), catchError(e => of(err(e))));
+export const ofPromiseR$: OfPromiseR$ = p =>
+  fromPromise(p).pipe(map(ok), catchError(e => of(err(parseServerError(e)))));
 
 /**
  * xfunction propR$

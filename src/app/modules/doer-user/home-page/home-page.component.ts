@@ -5,7 +5,7 @@ import { Observable } from "rxjs/Observable";
 import { IonicPage } from "ionic-angular";
 import { ionicGoAction } from "../../../libs/doer-ionic-core";
 
-@IonicPage({name: 'home'})
+@IonicPage({name: 'home', segment: 'home'})
 @Component({
     selector: 'dr-user-home-page',
     templateUrl: './home-page.component.html',
