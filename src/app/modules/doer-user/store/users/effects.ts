@@ -6,7 +6,7 @@ import { filterMap$, getPayload, mapR, isOK, mapR$, ok } from '@doer/core';
 import * as A from './actions';
 import { switchMap, map, filter, tap, withLatestFrom, flatMap } from 'rxjs/operators';
 import { UploadFileService, CameraService } from '@doer/native';
-import { setAvatarAction } from '@doer/ngx-core';
+import { setAvatarAction, isLoginResultAction } from '@doer/ngx-core';
 import { prop, propEq, pipe, not } from 'ramda';
 import { UsersListStore} from './types';
 import { Store } from '@ngrx/store';
@@ -21,6 +21,14 @@ export class Effects {
       private readonly usersService: UsersService,
       private readonly store: Store<UsersListStore>
   ) {}
+
+  // load users on successfull login
+  @Effect()
+  loginSuccess$ = this.actions$.pipe(
+    filterMap$(isLoginResultAction)(getPayload),
+    filter(isOK),
+    map(() => A.loadUsersAction())
+  );
 
   @Effect()
   load$ = this.actions$.pipe(

@@ -37,8 +37,8 @@ export class MyApp {
         if (res) {
           console.log('auth success', res);
           store.dispatch(loginResultAction(ok(res.principal)));
-          // load users for this owner
-          store.dispatch(loadUsersAction());
+          // load users for this owner (on users effects)
+          // store.dispatch(loadUsersAction());
           if (res.fromStored) {
             // principal could be updated but token not
             console.log('restore principal data from stored one');
