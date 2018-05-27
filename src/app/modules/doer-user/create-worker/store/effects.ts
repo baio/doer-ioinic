@@ -6,7 +6,7 @@ import { FormService } from './data/form.service';
 import {
   CommonFormEffects,
   ionicGoAction
-} from '../../../../libs/doer-ionic-core';
+} from '@doer/ionic-core';
 import {
   subFormActionsWrap,
   CommonFormEffectTypes,
@@ -15,7 +15,7 @@ import {
   loginResultAction,
   AuthService,
   loginFromTokensAction
-} from '../../../../libs/doer-ngx-core';
+} from '@doer/ngx-core';
 import { isSubFormAction, subFormAction } from './actions';
 
 import { ToastController, NavController } from 'ionic-angular';
@@ -25,11 +25,13 @@ import {
   isOK,
   ok,
   flatMapR$,
-  ofPromiseR$
-} from '../../../../libs/doer-core';
+  ofPromiseR$,
+  mapR
+} from '@doer/core';
 import { filter } from 'rxjs/operators/filter';
 import { always, pipe, prop, path } from 'ramda';
 import { flatMap, tap } from 'rxjs/operators';
+import { appendWorkerAction, User } from '../../store/users';
 
 const errFn = (toastController: ToastController): DisplayErrorFn => err => {
   const toast = toastController.create({
@@ -62,5 +64,16 @@ export class FormEffects extends CommonFormEffects {
   }
 
   @Effect() common = this.createCommonEffects();
+
+  @Effect() appendNewUser =
+    this.actions$.pipe(
+      filterMap$(isSubFormAction)(getPayload),
+      filterMap$(isSaveFormResultAction)(getPayload),
+      filterMap$(isOK)(prop('value')),
+      flatMap((data: User) => [
+        appendWorkerAction(data),
+        ionicGoAction({name : 'worker-page', id: data.id})
+      ])
+    );
 
 }

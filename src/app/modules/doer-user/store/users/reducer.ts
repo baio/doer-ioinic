@@ -35,6 +35,12 @@ export const reducer: ActionReducer<Users> = (
           action.payload.avatar,
           state
         );
+    case A.appendWorkerActionConst:
+        return assocPath(
+          ['items', action.payload.id],
+          {...action.payload, kind: 'Worker'},
+          state
+        );
     default:
       return state;
   }

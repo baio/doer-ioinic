@@ -16,8 +16,9 @@ import { Observable } from 'rxjs/Observable';
 import { selectFormSubState, subFormAction } from '../store';
 import { FormState, FormAction } from '../../../../libs/doer-ngx-core';
 import { IonicPage } from 'ionic-angular';
+import { backAction } from '../../../../libs/doer-ngx-core/ngrx/ngrx-router/actions';
 
-@IonicPage({ name: 'create-worker' })
+@IonicPage({ name: 'create-worker', segment: 'wokers/new' })
 @Component({
   selector: 'dr-user-create-worker-page',
   templateUrl: './create-worker-page.component.html',
@@ -66,13 +67,11 @@ export class CreateWorkerPageComponent {
     this.store.dispatch(subFormAction(action));
   }
 
-  onComplete() {
-
-    console.log('complete ++++');
+  onComplete(x) {
+    console.log('complete ++++', x);
   }
 
   onCancel() {
-
-    console.log('cancel ++++');
+    this.store.dispatch(backAction());
   }
 }

@@ -1,6 +1,6 @@
 import { IAction, action, isAction, IResultAction, resultAction, isResultAction } from '@doer/core';
 import { FormAction } from '@doer/ngx-core';
-import { Users, AddPhotoResult } from './types';
+import { Users, AddPhotoResult, User } from './types';
 
 type LoadUsersActionType = '[doer-user] load users';
 export const loadUsersActionConst = '[doer-user] load users';
@@ -88,6 +88,16 @@ export const isChangeWorkerAvatarResultAction =
         changeWorkerAvatarResultActionConst
 );
 
+type AppendWorkerActionType = '[doer-user] append worker';
+export const appendWorkerActionConst = '[doer-user] append worker';
+export type AppendWorkerAction = IAction<AppendWorkerActionType, Partial<User>>;
+export const appendWorkerAction = action<AppendWorkerActionType, Partial<User>>(
+    appendWorkerActionConst
+);
+export const isAppendWorkerAvatarAction = isAction<AppendWorkerActionType, Partial<User>>(
+    appendWorkerActionConst
+);
+
 export type Action = LoadUsersAction | LoadUsersResultAction | AddWorkerPhotoAction
     | AddWorkerPhotoResultAction |  UpdatePrincipalAvatarAction | SetUserAvatarAction
-    | ChangeWorkerAvatarAction | ChangeWorkerAvatarResultAction;
+    | ChangeWorkerAvatarAction | ChangeWorkerAvatarResultAction | AppendWorkerAction;

@@ -14,6 +14,8 @@ declare var window: Window;
 @Injectable()
 export class UploadFileWebService {
 
+  private pervFiles: any;
+
   constructor(
     private readonly httpService: HttpService
   ) {}
@@ -24,7 +26,9 @@ export class UploadFileWebService {
     method: string = 'POST',
     payload?: any | null
   ) {
-    const files = window.event.target['files'];
+    const files = window.event.target['files'] || this.pervFiles;
+    // when 2 file uploads one after another
+    this.pervFiles = files;
     const fileCount: number = files.length;
     const formData = new FormData();
     if (fileCount > 0) {

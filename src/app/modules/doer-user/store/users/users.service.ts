@@ -51,6 +51,7 @@ export class UsersService {
       `users/${userId}/enlist-photo`,
       path
     );
+
     const avatarResult = await this.uploadFileService.uploadFile(
       `users/${userId}/avatar`,
       path
@@ -97,7 +98,6 @@ export class UsersService {
         `users/${userId}/avatar`,
         path
       );
-      console.log('success!', result);
       return {userId, avatar: result};
     }
 

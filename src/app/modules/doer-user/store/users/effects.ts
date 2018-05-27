@@ -10,7 +10,7 @@ import { setAvatarAction } from '@doer/ngx-core';
 import { prop, propEq, pipe, not } from 'ramda';
 import { UsersListStore} from './types';
 import { Store } from '@ngrx/store';
-import { selectUser } from './selectors';
+import { selectUser, selectUsersSet } from './selectors';
 
 @Injectable()
 export class Effects {
@@ -42,8 +42,7 @@ export class Effects {
   changeWorkerAvatar$ = this.actions$.pipe(
     filterMap$(A.isChangeWorkerAvatarAction)(getPayload),
     switchMap(this.usersService.updateUserAvatar),
-    map(A.changeWorkerAvatarResultAction),
-    tap(console.log)
+    map(A.changeWorkerAvatarResultAction)
   );
 
   // just map changeWorkerAvatarResultAction -> setUserAvatarAction
@@ -55,10 +54,9 @@ export class Effects {
     map(A.setUserAvatarAction)
   );
 
-
   addWorkerPhoto$ = this.actions$.pipe(
     filterMap$(A.isAddWorkerPhotoAction)(getPayload),
-    flatMap((userId: string) => this.store.select(selectUser(userId)))
+    withLatestFrom(this.store.select(selectUsersSet), (userId: string, usersSet) => usersSet[userId])
   );
 
   @Effect()
