@@ -46,6 +46,7 @@ export class Effects {
   @Effect()
   addFirstWorkerPhoto$ = this.addWorkerPhoto$.pipe(
     filter(propEq('photosCount', 0)),
+    map(prop('id')),
     switchMap(this.usersService.addFirstWorkerPhoto),
     flatMap(res => {
       if (isOK(res)) {
@@ -62,6 +63,7 @@ export class Effects {
   @Effect()
   addNextWorkerPhoto$ = this.addWorkerPhoto$.pipe(
     filter(pipe(propEq('photosCount', 0), not)),
+    map(prop('id')),
     switchMap(this.usersService.addWorkerPhoto),
     map(A.addWorkerPhotoResultAction)
   );

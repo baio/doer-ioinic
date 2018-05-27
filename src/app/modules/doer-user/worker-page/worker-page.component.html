@@ -21,10 +21,7 @@
         </ion-item>
 
         <ion-item>
-            <input type="file" [multiple]="false" id="file_input" (change)="onAddWorkerPhoto(user.id, $event)">
-            <!--
-            <button ion-button (click)="onAddWorkerPhoto(user.id)">Add photo</button>
-            -->
+            <dr-take-photo-button text="Change Photo" (take)="onAddWorkerPhoto(user.id)"></dr-take-photo-button>
         </ion-item>
 
     </ion-card>

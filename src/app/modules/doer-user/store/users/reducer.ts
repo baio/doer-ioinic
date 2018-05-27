@@ -8,6 +8,7 @@ const defaultState: UsersList = {
   items: []
 };
 
+
 export const reducer: ActionReducer<UsersList> = (state = defaultState, action: A.Action) => {
   switch (action.type) {
     case A.loadUsersResultActionConst:
@@ -16,6 +17,8 @@ export const reducer: ActionReducer<UsersList> = (state = defaultState, action: 
         } else {
             return state;
         }
+    case A.addWorkerPhotoResultActionConst:
+        return state;
     default:
         return state;
   }

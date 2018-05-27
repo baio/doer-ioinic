@@ -48,7 +48,7 @@ export class MyApp {
             console.log('store principal from token');
             store.dispatch(storePrincipalAction());
           }
-          store.dispatch(ionicGoAction({name: 'profile', animate: false}));
+          store.dispatch(ionicGoAction({name: 'workers-list', animate: false}));
         } else {
           console.log('user not logined');
           store.dispatch(ionicGoAction({name: 'home', animate: false}));
