@@ -8,7 +8,7 @@
 
 <ion-content padding>
 
-    <ion-list [virtualScroll]="(list$ | async).items" approxItemHeight="65px" [virtualTrackBy]="trackBy">
+    <ion-list [virtualScroll]="list$ | async" approxItemHeight="65px" [virtualTrackBy]="trackBy">
 
         <ion-item *virtualItem="let item" (click)="onShow(item.id)">
 

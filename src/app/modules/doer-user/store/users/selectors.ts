@@ -1,15 +1,18 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { UsersList, UserTypes, User } from './types';
-import { filter, propEq, evolve, identity, find, pipe, prop } from 'ramda';
+import { Users, UserTypes, User } from './types';
+import { filter, propEq, evolve, identity, find, pipe, prop, path, values } from 'ramda';
 
-export const selectUsers = createFeatureSelector<UsersList>('users');
+export const selectUsers = createFeatureSelector<Users>('users');
 
-type SelectType = (type: UserTypes) => (list: UsersList) => UsersList;
-const selectType: SelectType = type => evolve({ items : filter(propEq('role', type)) });
+export const selectUsersSet = createSelector(selectUsers, x => x.items);
 
-export const selectWorkers = createSelector(selectUsers, selectType('Worker'));
+export const selectUsersList = createSelector(selectUsersSet, values);
 
-export const selectMasters = createSelector(selectUsers, selectType('Master'));
+type SelectType = (type: UserTypes) => (list: User[]) => User[];
+const selectType: SelectType = type => filter(propEq('role', type));
 
-export const selectUser = (id: string) =>
-    createSelector(selectUsers, pipe(prop('items'), find<User>(propEq('id', id))));
+export const selectWorkersList = createSelector(selectUsersList, selectType('Worker'));
+
+export const selectMastersList = createSelector(selectUsersList, selectType('Master'));
+
+export const selectUser = (id: string) => createSelector(selectUsersSet, x => x[id]);

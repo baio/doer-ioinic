@@ -17,12 +17,14 @@ export interface Worker extends User {
 
 export type UserTypes = 'Owner' | 'Master' | 'Worker';
 
-export interface UsersList {
-    items: User[];
+export interface UsersSet { [userId: string]: User; }
+
+export interface Users {
+    items: UsersSet;
 }
 
 export interface UsersListStore {
-    users: UsersList;
+    users: Users | null;
 }
 
 export interface AddPhotoResult {

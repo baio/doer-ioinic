@@ -1,6 +1,6 @@
 import { IAction, action, isAction, IResultAction, resultAction, isResultAction } from '@doer/core';
 import { FormAction } from '@doer/ngx-core';
-import { UsersList, AddPhotoResult } from './types';
+import { Users, AddPhotoResult } from './types';
 
 type LoadUsersActionType = '[doer-user] load users action';
 export const loadUsersActionConst = '[doer-user] load users action';
@@ -14,11 +14,11 @@ export const isLoadUsersAction = isAction<LoadUsersActionType, void>(
 
 type LoadUsersResultActionType = '[doer-user] load users result action';
 export const loadUsersResultActionConst = '[doer-user] load users result action';
-export type LoadUsersResultAction = IResultAction<LoadUsersResultActionType, UsersList>;
-export const loadUsersResultAction = resultAction<LoadUsersResultActionType, UsersList>(
+export type LoadUsersResultAction = IResultAction<LoadUsersResultActionType, Users>;
+export const loadUsersResultAction = resultAction<LoadUsersResultActionType, Users>(
     loadUsersResultActionConst
 );
-export const isLoadUsersResultAction = isResultAction<LoadUsersResultActionType, UsersList>(
+export const isLoadUsersResultAction = isResultAction<LoadUsersResultActionType, Users>(
     loadUsersResultActionConst
 );
 

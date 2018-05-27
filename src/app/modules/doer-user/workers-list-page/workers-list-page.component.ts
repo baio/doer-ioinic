@@ -10,7 +10,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { IonicPage } from 'ionic-angular';
 import { repeat } from 'ramda';
-import { UsersListStore, UsersList, selectWorkers } from '../store/users';
+import { UsersListStore, Users, selectWorkersList, User } from '../store/users';
 import { ionicGoAction } from '@doer/ionic-core';
 
 
@@ -22,10 +22,10 @@ import { ionicGoAction } from '@doer/ionic-core';
 })
 export class WorkersListPageComponent {
 
-  readonly list$: Observable<UsersList>;
+  readonly list$: Observable<User[]>;
 
   constructor(private readonly store: Store<UsersListStore>) {
-    this.list$ = store.select(selectWorkers);
+    this.list$ = store.select(selectWorkersList);
   }
 
   trackBy = (index, item) => {

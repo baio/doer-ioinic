@@ -8,25 +8,29 @@ import {
 import { ok, ObservableResult, err, mapR$ } from '@doer/core';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/Observable/of';
-import { UsersList, User } from './types';
-import { repeat, map, evolve, pipe, when, isNil, always } from 'ramda';
+import { Users, User } from './types';
+import { repeat, map, evolve, pipe, when, isNil, always, fromPairs, objOf } from 'ramda';
 import { UploadFileService, CameraService } from '@doer/native';
 import { DoerCameraService } from '@doer/common';
 import { fromPromise } from 'rxjs/observable/fromPromise';
 
 const DEFAULT_AVATAR = 'https://static.getjar.com/icon-50x50/f9/883743_thm.png';
 
-const mapListResult = list => ({
-  items: map(
-    evolve({ avatar: when(isNil, always(DEFAULT_AVATAR)) }),
-    list
-  )
-}) as any;
+const mapListResult: any =
+  pipe(
+    map(
+      pipe(
+        evolve({ avatar: when(isNil, always(DEFAULT_AVATAR)) }),
+        (x: any) => [x.id, x]
+      )
+    ),
+    fromPairs,
+    objOf('items')
+  );
 
 const toObsResult = <T>(f: Promise<T>) =>  fromPromise(
   f.then(ok).catch(err)
 );
-
 
 @Injectable()
 export class UsersService {
@@ -36,7 +40,7 @@ export class UsersService {
     private readonly cameraService: DoerCameraService
   ) {}
 
-  load = (): ObservableResult<UsersList> => {
+  load = (): ObservableResult<Users> => {
     return this.httpService.get('users').pipe(mapR$(mapListResult));
   };
 
