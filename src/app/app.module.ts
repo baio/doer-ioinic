@@ -14,10 +14,9 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { NgrxConstants, AuthService, AUTH_SERVICE_CONFIG, Auth0ImplicitService,
   authReducer, AuthEffects, ToastrService } from '@doer/ngx-core';
 import { Auth0ROPGService, RouterEffects } from '@doer/ionic-core';
-import { TakePhotoModule, StorageModule, StorageService } from '@doer/native';
-
+import { TakePhotoModule, StorageModule, StorageService, ToastModule } from '@doer/native';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 /*
 const auth0Config = {
@@ -62,9 +61,8 @@ const auth0Config = {
     TakePhotoModule.forRoot(),
     StorageModule.forRoot(),
     DoerUserModule,
-    //
-    BrowserAnimationsModule,
     ToastrModule.forRoot(),
+    ToastModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [

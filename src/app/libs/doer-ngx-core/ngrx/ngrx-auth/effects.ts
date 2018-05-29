@@ -41,7 +41,7 @@ export class AuthEffects {
     filterMap$(A.isLoginResultAction)(getPayload),
     filterMap$(isErr)(prop('error')),
     tap(x => {
-      this.toastr.show({ type: 'error', title: 'Ошибка авторизации', text: x['message'] });
+      this.toastr.show({ type: 'error', title: 'Ошибка авторизации', text: x['msg'] });
     })
   );
 
