@@ -11,12 +11,13 @@ import { DoerUserModule } from './modules/doer-user';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { NgrxConstants, AuthService, AUTH_SERVICE_CONFIG, Auth0ImplicitService, authReducer, AuthEffects } from '@doer/ngx-core';
+import { NgrxConstants, AuthService, AUTH_SERVICE_CONFIG, Auth0ImplicitService,
+  authReducer, AuthEffects, ToastrService } from '@doer/ngx-core';
 import { Auth0ROPGService, RouterEffects } from '@doer/ionic-core';
 import { TakePhotoModule, StorageModule, StorageService } from '@doer/native';
 
-
-
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 /*
 const auth0Config = {
@@ -46,7 +47,6 @@ const auth0Config = {
   }
 };
 
-
 @NgModule({
   declarations: [
     MyApp,
@@ -61,7 +61,10 @@ const auth0Config = {
     StoreDevtoolsModule.instrument(),
     TakePhotoModule.forRoot(),
     StorageModule.forRoot(),
-    DoerUserModule
+    DoerUserModule,
+    //
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -72,6 +75,7 @@ const auth0Config = {
     StatusBar,
     SplashScreen,
     StorageService,
+    ToastrService,
     {provide: AUTH_SERVICE_CONFIG, useValue: auth0Config },
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     {provide: AuthService, useClass: Auth0ROPGService}

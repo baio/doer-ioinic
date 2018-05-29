@@ -6,3 +6,4 @@ export * from './http/http.service';
 
 export * from './auth';
 export * from './storage.service';
+export * from './toastr.service';

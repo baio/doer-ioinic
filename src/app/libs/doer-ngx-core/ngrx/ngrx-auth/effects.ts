@@ -10,12 +10,13 @@ import {
   flatMap,
   withLatestFrom
 } from 'rxjs/operators';
-import { filterMap$, getPayload, ofPromiseR$, ok } from '../../../doer-core';
-import { pipe, omit, isNil, not } from 'ramda';
+import { filterMap$, getPayload, ofPromiseR$, ok, isOK, isErr } from '@doer/core';
+import { pipe, omit, isNil, not, prop } from 'ramda';
 import { AuthStore } from './ngrx-auth.types';
 import { Store } from '@ngrx/store';
 import { selectPrincipal } from './selectors';
 import { StorageService } from '../../storage.service';
+import { ToastrService } from '../../toastr.service';
 
 
 @Injectable()
@@ -24,15 +25,24 @@ export class AuthEffects {
     private readonly actions$: Actions,
     private readonly authService: AuthService,
     private readonly store: Store<AuthStore>,
-    private readonly storage: StorageService
+    private readonly storage: StorageService,
+    private readonly toastr: ToastrService
   ) {}
 
   @Effect()
   login$ = this.actions$.pipe(
     filterMap$(A.isLoginAction)(getPayload),
     flatMap(pipe(this.authService.login, ofPromiseR$)),
-    // serve only for errors
     map(A.loginResultAction)
+  );
+
+  @Effect({dispatch: false})
+  loginFails$ = this.actions$.pipe(
+    filterMap$(A.isLoginResultAction)(getPayload),
+    filterMap$(isErr)(prop('error')),
+    tap(x => {
+      this.toastr.show({ type: 'error', title: 'Ошибка авторизации', text: x['message'] });
+    })
   );
 
   @Effect()
